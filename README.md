@@ -86,9 +86,13 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 
 - `BaseSetting` stores default configurations, subject to TA changes
 - No `Menu` class: a list of 3 `MenuItem` objects is used instead, since they are considered base configuration
+- `TableView` counts no. of occupied tables
+- `ManagerView` tracks tasks available
+- Planning to put wait() as manager option rather than Chef/Waiter since they are more of Manager choice and not role specific actions.
 
 ---
 
 # Reflection
 
 - Underestimated the workload. Should have done the UML diagram first to track the work required.
+- Java has quite a number of convenient methods that bypassed the need of foreach
