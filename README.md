@@ -51,8 +51,8 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
    - Example: asking the Waiter to seat a Customer when there is no one in the queue
    - Should not consume an action point
    - Tell the Manager to choose again and explain why the previous option was invalid
-2. **Staff tasks available at start-of-turn display**
-   - Not sure whether to use the `describeToDos` method under Cashier/Chef/Waiter, or some logic to tell which tasks are available or not
+2. **Staff tasks available at start-of-turn display (Ongoing) ** 
+   - Will be done via ManagerView class
 3. **GameController turn order**
    - Waiter must run first, then Chef
    - This lets the Chef cook the current turn's order taken by the Waiter
