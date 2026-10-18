@@ -9,4 +9,5 @@ import NTUBurger.Roles.Customer;
 public interface StateView {
     List<Order> getOrdersByStatus(Order.Status status);
     List<Customer> getCustomersByStatus(Customer.Status status);
+    Order findOrderOf(Customer customer);
 }

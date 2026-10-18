@@ -53,7 +53,7 @@ public class Restaurant implements TableView{
         
         for (Table table : tables){
             if (!table.isOccupied()){
-                seatProcess(waiter, queueList.get(0), table);
+                seatProcess(waiter, queueList.get(0), table); // if we want Customer 2 to seat before Customer 1, need edit
                 break;
             }
         }

@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 // Requires fallback just incase the action is not valid
 
+// Wait() will be added in here
+
 public class ManagerMenu {
 
     public enum ManagerAction { SEAT_CUSTOMER, TAKE_ORDER, COOK, SERVE, PROCESS_PAYMENT, WAIT }

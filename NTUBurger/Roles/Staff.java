@@ -1,23 +1,16 @@
 package NTUBurger.Roles;
 
+// Just for tracking ID. .getClass.getSimpleName() returns the Class Name. Thus no need getRole
+// And probably future tracking of no. of chef/waiter/cashier
+
 public abstract class Staff {
-    
-    public enum Role { WAITER, CASHIER, CHEF }
 
     private final int id;
-    private final Role role;
 
-    public Staff(int id, Role role){
+    public Staff(int id){
         this.id = id;
-        this.role = role;
     }
 
     public int getId(){ return id; }
-    public Role getRole(){ return role; }
 
-    public String waiting(){
-        return "Wait";
-    }
-
-    public abstract String describeToDos();
 }

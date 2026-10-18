@@ -40,11 +40,12 @@ public class StateManager implements StateView {
     }
 
     // find customer's order
+    @Override 
     public Order findOrderOf(Customer customer) {
         Order.Status[] unserved = { Order.Status.PLACED, Order.Status.COOKING, Order.Status.READY };
-        for (Order.Status s : unserved) {
-            for (Order o : orderState.get(s)) {
-                if (o.getCustomer() == customer) { return o; }
+        for (Order.Status orderStatus : unserved) {
+            for (Order order : orderState.get(orderStatus)) {
+                if (order.getCustomer() == customer) { return order; }
             }
         }
         return null;

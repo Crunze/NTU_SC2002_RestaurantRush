@@ -7,7 +7,7 @@ import NTUBurger.Restaurant.Order;
 public class Cashier extends Staff {
     
         public Cashier(int id){
-        super(id, Role.CASHIER);
+        super(id);
     }
 
     public void processPayment(Order order){
@@ -16,8 +16,4 @@ public class Cashier extends Staff {
 
     // calculate payment
 
-    @Override
-    public String describeToDos(){
-        return "";
-    }
 }
