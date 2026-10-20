@@ -8,7 +8,7 @@ import NTUBurger.Roles.Waiter;
 
 import java.util.List;
 import java.util.Arrays;
-
+import java.util.Random;
 // Restaurant - Handles restuarant operations n processes
 // Owns Table so initialise table here
 
@@ -16,11 +16,13 @@ import java.util.Arrays;
 public class Restaurant implements TableView{
     private final StateManager stateManager;
     private final Table[] tables;
+    private final Random random;
 
-    public Restaurant(StateManager stateManager){
+    public Restaurant(StateManager stateManager, Random random){
         
         // Manage CustomerState and OrderState
         this.stateManager = stateManager;
+        this.random = random;
 
         // Initialise tables from Table.java
         tables = new Table[BaseSetting.NUM_TABLES];
@@ -44,6 +46,7 @@ public class Restaurant implements TableView{
     // Customer status: WAITING -> SEATED
     public void seatProcess(Waiter waiter, Customer customer, Table table){
         stateManager.updateCustomerState(customer, () -> waiter.seatCustomer(customer, table));
+        customer.seat();
     }
 
     // Queue Operation - process of seating customer, requires edit
@@ -66,7 +69,9 @@ public class Restaurant implements TableView{
 
     // Order Status: PLACED
     public void processNewOrder(Waiter waiter, Customer customer, List<MenuItem> menu){
-        stateManager.addOrder(waiter.takeOrder(customer, menu));
+        customer.chooseFood(menu.get(random.nextInt(menu.size()))); // Hardcoded Food, Need to set to Random
+        MenuItem food = customer.getChosenFood();
+        stateManager.addOrder(waiter.takeOrder(customer.getId(), food));
     }
 
     // Nested wrapper from both boilerplate to sync both customer n order state
@@ -75,8 +80,9 @@ public class Restaurant implements TableView{
     // Order Status: READY -> SERVED
     public void processServeOrder(Waiter waiter, Customer customer, Order order, int turnNo){
         stateManager.updateCustomerState(customer, () ->
-            stateManager.updateOrderState(order, () -> waiter.serveOrder(customer, order, turnNo)
+            stateManager.updateOrderState(order, () -> waiter.serveOrder(order)
             ));
+        customer.eat(turnNo);
     }
 
     // Customer Status: SERVED -> READY TO PAY

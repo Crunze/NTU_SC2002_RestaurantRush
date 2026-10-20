@@ -15,23 +15,19 @@ public class Waiter extends Staff {
         super(id);
     }
 
+    // Waiter assigns table to customer
     public void seatCustomer(Customer customer, Table table){
         table.seat(customer);
-        customer.seat();
     }
 
-    // Waiter talks with Customer and return Customer Order
-    public Order takeOrder(Customer customer, List<MenuItem> menu){
-        customer.chooseFood(menu.get(0)); // Hardcoded Food, Need to set to Random
-        MenuItem food = customer.getChosenItem();
-        Order newOrder = new Order(customer, food);
+    // Waiter take down customer order
+    public Order takeOrder(int customerId, MenuItem food){
+        Order newOrder = new Order(customerId, food);
         return newOrder;
     }
 
-    public void serveOrder(Customer customer, Order order, int turnNo){
+    // Waiter serves food
+    public void serveOrder(Order order){
         order.served();
-        customer.eat(turnNo);
     }
-
-    
 }

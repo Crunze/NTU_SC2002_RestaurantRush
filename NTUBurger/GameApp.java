@@ -2,6 +2,7 @@ package NTUBurger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
@@ -15,8 +16,8 @@ import NTUBurger.Roles.Waiter;
 public class GameApp {
     public static void main(String[] args) {
         
-        
-
+        // Chosen seed value to be 18.
+        Random random = new Random(18);
 
         //Creating Waiter/Chef/Cashier
         List<Waiter> waiters = new ArrayList<>();
@@ -34,7 +35,7 @@ public class GameApp {
 
         //Creating Main Game
         StateManager stateManager = new StateManager();
-        Restaurant restaurant = new Restaurant(stateManager);
+        Restaurant restaurant = new Restaurant(stateManager, random);
 
         GameController gameController = new GameController(restaurant, stateManager);
         gameController.runGame();

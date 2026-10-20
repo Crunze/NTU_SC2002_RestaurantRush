@@ -11,13 +11,13 @@ public class Order {
     // AKA Represent a group of Constants
     public enum Status{ PLACED, COOKING, READY, SERVED, PAID, CANCELLED }
 
-    private Customer customer;
+    private final int customerId;
     private Status status = Status.PLACED;
     private int prepUnits;
     private int priceCents;
 
-    public Order(Customer customer, MenuItem item){
-        this.customer = customer;
+    public Order(int customerId, MenuItem item){
+        this.customerId = customerId;
         prepUnits = item.getPrepUnits();
         priceCents = item.getPrice();
     }
@@ -26,7 +26,7 @@ public class Order {
     public Status getStatus(){ return status; }
     // Order hold price
     public int getPrice(){ return priceCents; }
-    public Customer getCustomer(){ return customer; }
+    public int getCustomerId(){ return customerId; }
 
     // For cashier to set after calculating the price after discount
     public void setPrice(int priceCents){ this.priceCents = priceCents;}

@@ -40,15 +40,22 @@ public class StateManager implements StateView {
     }
 
     // find customer's order
+    // orderStatus created from the List.of(Order.Status)
     @Override 
     public Order findOrderOf(Customer customer) {
-        Order.Status[] unserved = { Order.Status.PLACED, Order.Status.COOKING, Order.Status.READY };
-        for (Order.Status orderStatus : unserved) {
-            for (Order order : orderState.get(orderStatus)) {
-                if (order.getCustomer() == customer) { return order; }
-            }
-        }
-        return null;
+        return List.of(Order.Status.PLACED, Order.Status.COOKING, Order.Status.READY).stream()
+                    .flatMap(orderStatus -> orderState.get(orderStatus).stream())
+                    .filter(order -> order.getCustomerId() == customer.getId()).findFirst()
+                    .orElse(null);
+    }
+    
+    // find customer by customerId
+    // flatMap(List::stream) : Merge all lists from customerState.values() into one stream of customers
+    // filter keeps the found customer that has matching ID
+    @Override 
+    public Customer findCustomerById(int customerId){
+        return customerState.values().stream().flatMap(List::stream).filter(customer -> customer.getId() == customerId)
+                            .findFirst().orElse(null);
     }
 
     // Add Customer to their status
