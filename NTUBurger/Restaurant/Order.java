@@ -33,10 +33,12 @@ public class Order {
 
     // Chef determines the cooking progress via cookUnits
     public void preparing(int cookUnits){
-        if(prepUnits>0){
-            status = Status.COOKING;
-            prepUnits -= cookUnits;
-        }
+        // Only if Status is Cooking or Placed, then proceed
+        if (status != Status.PLACED && status != Status.COOKING){ return; }
+
+        status = Status.COOKING;
+        prepUnits -= cookUnits;
+
         // Set status to ready if cooked finish
         if(prepUnits <= 0){ status = Status.READY; }
     }

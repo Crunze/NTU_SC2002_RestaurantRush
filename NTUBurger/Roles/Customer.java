@@ -47,7 +47,7 @@ public abstract class Customer {
     public void abandon() { status = Status.ABANDONED; }
 
     // True if food received by Customer
-    public boolean isServed(){
+    public boolean hasReceivedFood(){
         return status == Status.SERVED || status == Status.READY_TO_PAY || status == Status.PAID;
     }
 
