@@ -88,6 +88,7 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 - No `Menu` class: a list of 3 `MenuItem` objects is used instead, since they are considered base configuration
 - `TableView` counts no. of occupied tables
 - `ManagerView` tracks tasks available
+- `Chef` has cookUnits attribute to determine no. of prepUnits to be deducted in `Order` class
 - Planning to put wait() as manager option rather than Chef/Waiter since they are more of Manager choice and not role specific actions.
 
 ---
