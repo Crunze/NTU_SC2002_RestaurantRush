@@ -1,7 +1,5 @@
 package NTUBurger.Roles;
 
-import java.util.List;
-
 import NTUBurger.Restaurant.MenuItem;
 import NTUBurger.Restaurant.Order;
 import NTUBurger.Restaurant.Table;

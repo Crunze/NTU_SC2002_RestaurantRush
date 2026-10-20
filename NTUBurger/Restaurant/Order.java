@@ -1,7 +1,5 @@
 package NTUBurger.Restaurant;
 
-import NTUBurger.Roles.Customer;
-
 // Each time a meal is ordered thru Waiter, an order will be created
 
 public class Order {
