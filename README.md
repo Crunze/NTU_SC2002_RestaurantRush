@@ -38,7 +38,7 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 ## To Be Implemented (High Priority)
 
 1. **DisplayController**: controls which display to use (Start Display, End Display, etc.)
-2. **ManagerMenu**: opens a numbered menu for the user to choose an action *(easier to implement)*
+2. ~~**ManagerMenu: opens a numbered menu for the user to choose an action *(easier to implement)~~
 3. **GameController**: the core that runs all classes and objects
 4. **GameApp**: entry point of the program and initialisation of all core classes
 5. **Cashier**: payment calculation method
@@ -47,13 +47,9 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 
 ## Missing Project Requirements (High Priority)
 
-1. **Invalid Manager choices**
-   - Example: asking the Waiter to seat a Customer when there is no one in the queue
-   - Should not consume an action point
-   - Tell the Manager to choose again and explain why the previous option was invalid
-2. **Staff tasks available at start-of-turn display (Ongoing)** 
+1. **Staff tasks available at start-of-turn display (Ongoing)** 
    - Will be done via ManagerView class
-3. **GameController turn order**
+3. **GameController turn order (Ongoing)**
    - Waiter must run first, then Chef
    - This lets the Chef cook the current turn's order taken by the Waiter
    - But the Waiter must not serve READY food made by the Chef in the same turn
@@ -63,9 +59,10 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 1. **Order class as a receipt** *(ongoing)*
    - Order also functions as a receipt, so the Cashier can update the price set in Order and charge accordingly
 2. **Configurable staff and actions** *(low priority)*
-   - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters and number of actions
+   - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters
    - The game must be ready to adjust accordingly
-
+3. **Make all enum classes have their own files** 
+   - There should be no more nested enum status
 ---
 
 # Game Design (Implemented)
@@ -73,7 +70,7 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 ## View Restrictions
 
 - `StateView` only allows retrieval of Customer and Order lists sorted by status from the `StateManager` class
-- `TableView` only allows retrieval of the table array from the `Restaurant` class
+- `TableView` only allows retrieval of the table array and related table view operations from the `Restaurant` class
 
 ## Restaurant Class Split into StateManager and Restaurant
 
