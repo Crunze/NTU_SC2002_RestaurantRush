@@ -13,6 +13,9 @@ import NTUBurger.Roles.Customer;
 // To identify special customers, might need to find a way to identify them...
 // No interface is needed to protect this class. Nth much to protect here
 
+// This contains queueing customer, customer who has ordered and has not ordered, customer whose order is ready
+// Basically everyone but NOT customer who ready to pay
+
 public class ManagerView {
 
     private final StateView stateView;
@@ -55,6 +58,11 @@ public class ManagerView {
 
     public List<Integer> getTasks(Task task){
         return List.copyOf(taskAvailable.get(task));
+    }
+
+    // Check if the selected task contains the customerId
+    public boolean isAvailable(Task task, int customerId){
+        return taskAvailable.get(task).contains(customerId);
     }
 }
 

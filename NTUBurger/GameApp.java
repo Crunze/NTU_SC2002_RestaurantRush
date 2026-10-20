@@ -3,7 +3,11 @@ package NTUBurger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
+import NTUBurger.Manager.ChoiceValidator;
+import NTUBurger.Manager.ManagerMenu;
+import NTUBurger.Manager.ManagerView;
 import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
 import NTUBurger.Roles.Cashier;
@@ -34,10 +38,14 @@ public class GameApp {
         }
 
         //Creating Main Game
+        Scanner scanner = new Scanner(System.in); 
         StateManager stateManager = new StateManager();
         Restaurant restaurant = new Restaurant(stateManager, random);
+        ManagerView managerView = new ManagerView(stateManager);
+        ChoiceValidator validator = new ChoiceValidator(managerView, restaurant);
+        ManagerMenu menu = new ManagerMenu(scanner, validator);
 
-        GameController gameController = new GameController(restaurant, stateManager);
+        GameController gameController = new GameController(restaurant, stateManager, managerView, menu, validator);
         gameController.runGame();
 
     }

@@ -1,6 +1,6 @@
 package NTUBurger.Manager;
 
-// Manager Choices for both Chef and Waiter
+// Valid action task for Manager to choose
 
 public enum Task { 
     WAITING("Wait"),
