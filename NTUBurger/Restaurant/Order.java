@@ -31,14 +31,14 @@ public class Order {
     // For cashier to set after calculating the price after discount
     public void setPrice(int priceCents){ this.priceCents = priceCents;}
 
-    // Each time Chef execute this, - 1 PrepUnits. 
-    public void preparing(){
-        if(prepUnits!=0){
+    // Chef determines the cooking progress via cookUnits
+    public void preparing(int cookUnits){
+        if(prepUnits>0){
             status = Status.COOKING;
-            prepUnits--;
+            prepUnits -= cookUnits;
         }
         // Set status to ready if cooked finish
-        if(prepUnits == 0){ status = Status.READY; }
+        if(prepUnits <= 0){ status = Status.READY; }
     }
 
     // if Served

@@ -5,6 +5,7 @@ import java.util.List;
 import NTUBurger.Restaurant.MenuItem;
 
 // Base Config, final prevents this class from having subclasses, NOT A Superclass
+// Specific number of Staff action, E.g., MAX_WAITER_TASK_PER_TURN should be in their own Role Class
 
 public final class BaseSetting {
 
@@ -17,11 +18,6 @@ public final class BaseSetting {
     public static final int NUM_WAITERS = 1;
     public static final int NUM_CHEFS = 1;
     public static final int NUM_CASHIERS = 1;
-
-    // Staff Actions
-    public static final int MAX_WAITER_TASK = 1;
-    public static final int MAX_CHEF_PREPARATION = 1;
-    public static final int MAX_CASHIER_PAYMENT = 1;    
 
     // List.of creates an unmodifiable list
     public static final List<Integer> CUSTOMER_ARRIVAL_TURN = List.of(1, 4, 7, 10, 13, 16);
