@@ -14,8 +14,8 @@ public class Waiter extends Staff {
     }
 
     // Waiter assigns table to customer
-    public void seatCustomer(Customer customer, Table table){
-        table.seat(customer);
+    public void seatCustomer(int customerId, Table table){
+        table.seat(customerId);
     }
 
     // Waiter take down customer order

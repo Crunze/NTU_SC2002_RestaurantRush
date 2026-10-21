@@ -45,7 +45,7 @@ public class Restaurant implements TableView{
 
     // Customer status: WAITING -> SEATED
     public void seatProcess(Waiter waiter, Customer customer, Table table){
-        stateManager.updateCustomerState(customer, () -> waiter.seatCustomer(customer, table));
+        stateManager.updateCustomerState(customer, () -> waiter.seatCustomer(customer.getId(), table));
         customer.seat();
     }
 
@@ -129,7 +129,7 @@ public class Restaurant implements TableView{
 
         // free their table if they had one
         for (Table t : tables) {           
-            if (t.getCustomer() == customer) { t.free(); }
+            if (t.getCustomerId() == customer.getId()) { t.free(); }
         }
     }
 }

@@ -1,28 +1,26 @@
 package NTUBurger.Restaurant;
 
-import NTUBurger.Roles.Customer;
-
 // Table Class for Table State
 
 public class Table {
 
     private final int number;
-    private Customer customer = null;
+    private int customerId = -1;
 
     public Table(int number){
         this.number = number;
     }
 
     public int getNumber(){ return number; }
-    public Customer getCustomer(){ return customer; }
+    public int getCustomerId(){ return customerId; }
 
     // Check if table is empty
-    public boolean isOccupied(){ return customer != null; }
+    public boolean isOccupied(){ return customerId != -1; }
 
     // Seat Customer
-    public void seat(Customer c){
+    public void seat(int customerId){
         if(!isOccupied()){
-            customer = c;
+            this.customerId = customerId;
         } else{
             throw new IllegalStateException("Table " + number + " is already occupied!");
         }
@@ -30,6 +28,6 @@ public class Table {
 
     // Customer Left
     public void free(){
-        customer = null;
+        customerId = -1;
     }
 }
