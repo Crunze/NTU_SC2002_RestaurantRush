@@ -2,7 +2,7 @@ package NTUBurger.Roles;
 
 import NTUBurger.Restaurant.Order;
 
-// Cashier to collect payment
+// Cashier: Handles payment
 
 public class Cashier extends Staff {
     
@@ -10,10 +10,11 @@ public class Cashier extends Staff {
         super(id);
     }
 
-    public void processPayment(Order order){
+    public void processPayment(Order order, Customer customer){
+        int originalPrice = order.getPrice();
+        int totalPrice = originalPrice - (customer.discount() * originalPrice);
+        order.setPrice(totalPrice);
         order.paid();
     }
-
-    // calculate payment
 
 }

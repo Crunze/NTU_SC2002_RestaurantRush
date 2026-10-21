@@ -95,7 +95,7 @@ public class Restaurant implements TableView{
     // Order Status: SERVED -> PAID
     public void processReadyToPay(Cashier cashier, Customer customer, Order order, Table table){
         stateManager.updateCustomerState(customer, () ->
-            stateManager.updateOrderState(order, () -> cashier.processPayment(order)
+            stateManager.updateOrderState(order, () -> cashier.processPayment(order, customer)
             ));
         table.free();
     }

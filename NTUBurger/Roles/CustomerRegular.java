@@ -11,6 +11,8 @@ public class CustomerRegular extends Customer{
     // Function Overriding
     @Override
     public int satisfactionLossPerTurn(){ return 8; }
+
+    // To be written as Full amt - 0.0 x Full amt = AmountToPay
     @Override 
     public int discount(){ return 0; }
 }
