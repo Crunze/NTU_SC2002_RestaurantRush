@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import NTUBurger.Restaurant.Order;
+import NTUBurger.Restaurant.OrderStatus;
 import NTUBurger.Restaurant.StateView;
 import NTUBurger.Roles.Customer;
+import NTUBurger.Roles.CustomerStatus;
 
 // For tracking of tasks Available (Customers lacking which service) - Store Customer ID
 // To identify special customers, might need to find a way to identify them...
@@ -38,21 +40,21 @@ public class ManagerView {
         
         // SEATING depends on CUSTOMER is WAITING
         // Add all queueing customers that requires a table
-        taskAvailable.get(Task.SEATING).addAll(stateView.getCustomersByStatus(Customer.Status.WAITING).stream().map(Customer::getId).toList());
+        taskAvailable.get(Task.SEATING).addAll(stateView.getCustomersByStatus(CustomerStatus.WAITING).stream().map(Customer::getId).toList());
         
         // ORDERING depends on CUSTOMER is SEATED AND NO PLACED ORDER
         // Add all customers that are seated, then remove those that placed order already
-        taskAvailable.get(Task.ORDERING).addAll(stateView.getCustomersByStatus(Customer.Status.SEATED).stream()
+        taskAvailable.get(Task.ORDERING).addAll(stateView.getCustomersByStatus(CustomerStatus.SEATED).stream()
                     .filter(customer -> stateView.findOrderOf(customer) == null).map(Customer::getId).toList());
 
         // COOKING depends on ORDER is PLACED OR COOKING
-        taskAvailable.get(Task.COOKING).addAll(stateView.getOrdersByStatus(Order.Status.PLACED)
+        taskAvailable.get(Task.COOKING).addAll(stateView.getOrdersByStatus(OrderStatus.PLACED)
                     .stream().map(Order::getCustomerId).toList());
-        taskAvailable.get(Task.COOKING).addAll(stateView.getOrdersByStatus(Order.Status.COOKING)
+        taskAvailable.get(Task.COOKING).addAll(stateView.getOrdersByStatus(OrderStatus.COOKING)
                     .stream().map(Order::getCustomerId).toList());
 
         // SERVING depends on ORDER is READY
-        taskAvailable.get(Task.SERVING).addAll(stateView.getOrdersByStatus(Order.Status.READY)
+        taskAvailable.get(Task.SERVING).addAll(stateView.getOrdersByStatus(OrderStatus.READY)
                     .stream().map(Order::getCustomerId).toList());
     }
 

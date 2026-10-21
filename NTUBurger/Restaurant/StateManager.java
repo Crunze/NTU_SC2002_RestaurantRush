@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import NTUBurger.Roles.Customer;
+import NTUBurger.Roles.CustomerStatus;
 
 // Handles State change for Customer and Order
 
@@ -13,16 +14,16 @@ public class StateManager implements StateView {
     // Map< KEY : VALUE >, KEY Type: Enum Constant, VALUE Type: List
     // EnumMap strictly create available slots based on status defined in Customer and Order
     // EnumMap is upcasted here to Map (Interface), if in the future, can just edit the right side to change EnumMap to something else
-    private final Map<Customer.Status, List<Customer>> customerState = new EnumMap<>(Customer.Status.class);
-    private final Map<Order.Status, List<Order>> orderState = new EnumMap<>(Order.Status.class);
+    private final Map<CustomerStatus, List<Customer>> customerState = new EnumMap<>(CustomerStatus.class);
+    private final Map<OrderStatus, List<Order>> orderState = new EnumMap<>(OrderStatus.class);
 
     public StateManager(){
         // For each KEY (status), create a VALUE (list)
         // Updating all Six Enummap slots to KEY : VALUE
-        for (Customer.Status cs : Customer.Status.values()){
+        for (CustomerStatus cs : CustomerStatus.values()){
             customerState.put(cs, new ArrayList<>());
         }
-        for (Order.Status os : Order.Status.values()){
+        for (OrderStatus os : OrderStatus.values()){
             orderState.put(os, new ArrayList<>());
         }
     }
@@ -30,20 +31,20 @@ public class StateManager implements StateView {
     // List.copyOf prevents the original list from being modified. Same as Collections.unmodifiable
     // Return list of orders based on their status
     @Override 
-    public List<Order> getOrdersByStatus(Order.Status status){
+    public List<Order> getOrdersByStatus(OrderStatus status){
         return List.copyOf(orderState.get(status));
     }
     // Return list of customers based on their status
     @Override 
-    public List<Customer> getCustomersByStatus(Customer.Status status){
+    public List<Customer> getCustomersByStatus(CustomerStatus status){
         return List.copyOf(customerState.get(status));
     }
 
     // find customer's order
-    // orderStatus created from the List.of(Order.Status)
+    // orderStatus created from the List.of(OrderStatus)
     @Override 
     public Order findOrderOf(Customer customer) {
-        return List.of(Order.Status.PLACED, Order.Status.COOKING, Order.Status.READY).stream()
+        return List.of(OrderStatus.PLACED, OrderStatus.COOKING, OrderStatus.READY).stream()
                     .flatMap(orderStatus -> orderState.get(orderStatus).stream())
                     .filter(order -> order.getCustomerId() == customer.getId()).findFirst()
                     .orElse(null);
@@ -70,9 +71,9 @@ public class StateManager implements StateView {
     // Using Runnable action, action.run() as a placeholder
     // Update Order state Boilerplate
     public void updateOrderState(Order order, Runnable action){
-        Order.Status oldStatus = order.getStatus();
+        OrderStatus oldStatus = order.getStatus();
         action.run(); // Placeholder action
-        Order.Status newStatus = order.getStatus();
+        OrderStatus newStatus = order.getStatus();
 
         // if (oldStatus == newStatus) return; <-- Exception might be needed
 
@@ -82,9 +83,9 @@ public class StateManager implements StateView {
 
     // Update Customer state Boilerplate
     public void updateCustomerState(Customer customer, Runnable action){
-        Customer.Status oldStatus = customer.getStatus();
+        CustomerStatus oldStatus = customer.getStatus();
         action.run(); // Placeholder action
-        Customer.Status newStatus = customer.getStatus();
+        CustomerStatus newStatus = customer.getStatus();
 
         // if (oldStatus == newStatus) return; <-- Exception might be needed
 

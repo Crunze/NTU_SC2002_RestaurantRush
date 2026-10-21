@@ -4,13 +4,8 @@ package NTUBurger.Restaurant;
 
 public class Order {
 
-    // Status is a nested class and any enum declared = static by default
-    // enum -> Strictly enforces the states here, meaning any typos of state = compile error
-    // AKA Represent a group of Constants
-    public enum Status{ PLACED, COOKING, READY, SERVED, PAID, CANCELLED }
-
     private final int customerId;
-    private Status status = Status.PLACED;
+    private OrderStatus status = OrderStatus.PLACED;
     private int prepUnits;
     private int priceCents;
 
@@ -21,7 +16,7 @@ public class Order {
     }
 
     // Display Interface <-- Might need ToStrings mtd
-    public Status getStatus(){ return status; }
+    public OrderStatus getStatus(){ return status; }
     // Order hold price
     public int getPrice(){ return priceCents; }
     public int getCustomerId(){ return customerId; }
@@ -31,35 +26,35 @@ public class Order {
 
     // Chef determines the cooking progress via cookUnits
     public void preparing(int cookUnits){
-        // Only if Status is Cooking or Placed, then proceed
-        if (status != Status.PLACED && status != Status.COOKING){ return; }
+        // Only if OrderStatus is Cooking or Placed, then proceed
+        if (status != OrderStatus.PLACED && status != OrderStatus.COOKING){ return; }
 
-        status = Status.COOKING;
+        status = OrderStatus.COOKING;
         prepUnits -= cookUnits;
 
         // Set status to ready if cooked finish
-        if(prepUnits <= 0){ status = Status.READY; }
+        if(prepUnits <= 0){ status = OrderStatus.READY; }
     }
 
     // if Served
-    public void served(){ status = Status.SERVED; }
+    public void served(){ status = OrderStatus.SERVED; }
 
     // if Paid
-    public void paid(){ status = Status.PAID; }
+    public void paid(){ status = OrderStatus.PAID; }
 
     // If Customer left, cancel order
-    public void cancelOrder(){ status = Status.CANCELLED; }
+    public void cancelOrder(){ status = OrderStatus.CANCELLED; }
 
     // True if cooked finish
-    public boolean isOrderReady(){ return status == Status.READY; }
+    public boolean isOrderReady(){ return status == OrderStatus.READY; }
 
     // True if food is served
-    public boolean isServed(){ return status == Status.SERVED; }
+    public boolean isServed(){ return status == OrderStatus.SERVED; }
 
     // True if food is paid
-    public boolean isPaid(){ return status == Status.PAID; }
+    public boolean isPaid(){ return status == OrderStatus.PAID; }
 
     // True if food is Cancelled
-    public boolean isCancelled(){ return status == Status.CANCELLED; }
+    public boolean isCancelled(){ return status == OrderStatus.CANCELLED; }
 
 }

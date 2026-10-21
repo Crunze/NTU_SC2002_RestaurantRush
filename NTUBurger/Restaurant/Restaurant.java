@@ -4,6 +4,7 @@ import NTUBurger.BaseSetting;
 import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
+import NTUBurger.Roles.CustomerStatus;
 import NTUBurger.Roles.Waiter;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class Restaurant implements TableView{
 
     // Queue Operation - process of seating customer, requires edit
     public void processQueue(Waiter waiter){
-        List<Customer> queueList = stateManager.getCustomersByStatus(Customer.Status.WAITING);
+        List<Customer> queueList = stateManager.getCustomersByStatus(CustomerStatus.WAITING);
         if (queueList.isEmpty()){ return; } // No one in queue! Need test Exception Handling
         
         for (Table table : tables){
@@ -101,7 +102,7 @@ public class Restaurant implements TableView{
     }
 
     public void processSatisfaction(){
-        for (Customer.Status s : new Customer.Status[]{ Customer.Status.WAITING, Customer.Status.SEATED}){
+        for (CustomerStatus s : new CustomerStatus[]{ CustomerStatus.WAITING, CustomerStatus.SEATED}){
             for (Customer c : stateManager.getCustomersByStatus(s)) {
                 c.loseSatisfaction();
                 if (c.isSatisfactionZero()) {
@@ -113,10 +114,10 @@ public class Restaurant implements TableView{
 
     // :: same as lambda but for no argument
     public void processAbandoned(Customer customer){
-        Customer.Status oldStatus = customer.getStatus();
+        CustomerStatus oldStatus = customer.getStatus();
 
         // Stop further processing if customer has already left
-        if (oldStatus == Customer.Status.PAID || oldStatus == Customer.Status.ABANDONED){ return; }
+        if (oldStatus == CustomerStatus.PAID || oldStatus == CustomerStatus.ABANDONED){ return; }
 
         // Customer left
         stateManager.updateCustomerState(customer, customer::abandon);
