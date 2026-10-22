@@ -37,19 +37,14 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 
 ## To Be Implemented (High Priority)
 
-1. **DisplayController**: controls which display to use (Start Display, End Display, etc.)
-2. ~~**ManagerMenu: opens a numbered menu for the user to choose an action *(easier to implement)~~
-3. **GameController**: the core that runs all classes and objects
-4. **GameApp**: entry point of the program and initialisation of all core classes
-5. **Cashier**: payment calculation method
-6. **Exception handling** for all classes
-7. **Access modifiers**: adjust (public/protected/private) according to security needs for all classes
+1. **GameController**: the core that runs all classes and objects
+2. **GameApp**: entry point of the program and initialisation of all core classes
+3. **Exception handling** for all classes
+4. **Access modifiers**: adjust (public/protected/private) according to security needs for all classes
 
 ## Missing Project Requirements (High Priority)
 
-1. **Staff tasks available at start-of-turn display (Ongoing)** 
-   - Will be done via ManagerView class
-3. **GameController turn order (Ongoing)**
+1. **GameController turn order (Ongoing)**
    - Waiter must run first, then Chef
    - This lets the Chef cook the current turn's order taken by the Waiter
    - But the Waiter must not serve READY food made by the Chef in the same turn
@@ -61,8 +56,7 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 2. **Configurable staff and actions** *(low priority)*
    - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters
    - The game must be ready to adjust accordingly
-3. **Make all enum classes have their own files** 
-   - There should be no more nested enum status
+
 ---
 
 # Game Design (Implemented)
