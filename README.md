@@ -51,9 +51,7 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 
 ## Future Design Considerations
 
-1. **Order class as a receipt** *(ongoing)*
-   - Order also functions as a receipt, so the Cashier can update the price set in Order and charge accordingly
-2. **Configurable staff and actions** *(low priority)*
+1. **Configurable staff and actions** *(low priority)*
    - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters
    - The game must be ready to adjust accordingly
 
