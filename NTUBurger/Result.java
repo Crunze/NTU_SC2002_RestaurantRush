@@ -1,8 +1,8 @@
 package NTUBurger;
 
-import NTUBurger.Restaurant.StateView;
 import NTUBurger.Restaurant.Order;
 import NTUBurger.Restaurant.OrderStatus;
+import NTUBurger.Restaurant.StateView;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerStatus;
 
@@ -22,16 +22,16 @@ public class Result {
 
     // Convert List to Stream then normal stream into specialised stream for Double
     // Sum everything to give total revenue. Returns 0.0 if stream is nth
-    public double revenue(){
+    public int revenue(){
         return stateView.getOrdersByStatus(OrderStatus.PAID).stream()
-                .mapToDouble(Order::getPrice).sum();
+                .mapToInt(Order::getPrice).sum();
     }
     // Average the total
     // If no one, throws an exception, so need to catch it during display
     public double avgSatisfaction(){
         return stateView.getCustomersByStatus(CustomerStatus.PAID).stream()
                 .mapToInt(Customer::getSatisfaction).average()
-                .orElseThrow(() -> new IllegalStateException("N/A"));
+                .orElse(0.0);
     }
 
     // Served + readytopay + paid
@@ -43,5 +43,15 @@ public class Result {
 
     public int unhappyDeparture(){
         return stateView.getCustomersByStatus(CustomerStatus.ABANDONED).size();
+    }
+
+    // Final Outcome
+    public boolean isVictory() {
+        int paid = stateView.getCustomersByStatus(CustomerStatus.PAID).size();
+        Double avg = avgSatisfaction();
+
+        return paid >= BaseSetting.MIN_PAID_CUSTOMERS
+                && revenue() >= BaseSetting.MIN_REVENUE_CENTS
+                && avg >= BaseSetting.MIN_AVG_SATISFACTION;
     }
 }

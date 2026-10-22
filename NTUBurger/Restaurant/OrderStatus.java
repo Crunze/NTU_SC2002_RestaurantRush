@@ -1,4 +1,7 @@
 package NTUBurger.Restaurant;
+
+// Different Order status
+
 // Status is a class and any enum declared = static by default
 // enum -> Strictly enforces the states here, meaning any typos of state = compile error
 // AKA Represent a group of Constants

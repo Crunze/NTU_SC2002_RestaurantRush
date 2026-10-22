@@ -15,8 +15,6 @@ import NTUBurger.Roles.CustomerStatus;
 // To identify special customers, might need to find a way to identify them...
 // No interface is needed to protect this class. Nth much to protect here
 
-// This contains queueing customer, customer who has ordered and has not ordered, customer whose order is ready
-// Basically everyone but NOT customer who ready to pay
 
 public class ManagerView {
 
