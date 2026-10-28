@@ -54,22 +54,6 @@ public class Restaurant implements TableView{
         });
     }
 
-    // Lowest-numbered free table, or null if every table is taken
-    public Table firstFreeTable(){
-        for (Table table : tables){
-            if (!table.isOccupied()){ return table; }
-        }
-        return null;
-    }
-
-    // Table the customer is sitting at, or null
-    public Table findTableOf(Customer customer){
-        for (Table table : tables){
-            if (table.getCustomerId() == customer.getId()){ return table; }
-        }
-        return null;
-    }
-
     // Queue Operation - process of seating customer, requires edit
     public void processQueue(Waiter waiter){
         List<Customer> queueList = stateManager.getCustomersByStatus(CustomerStatus.WAITING);
