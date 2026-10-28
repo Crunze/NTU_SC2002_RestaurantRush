@@ -30,6 +30,7 @@ public final class GameTests {
         inputEndingEarlyStillFinishes();
         invalidInputDoesNotUseUpTheTurn();
         byteOrderMarkIsIgnored();
+        happyHourAndHostInAScriptedTurn();
         greedyBotWins();
         randomGames(300);
     }
@@ -50,7 +51,8 @@ public final class GameTests {
     }
 
     private static void idleGameIsDefeat() {
-        Object[] out = play("0\n0\n".repeat(BaseSetting.MAX_TURNS));
+        // Happy Hour is never started, so the question is asked every turn
+        Object[] out = play("n\n0\n0\n0\n".repeat(BaseSetting.MAX_TURNS));
         Result r = (Result) out[1];
         check(!r.isVictory(), "waiting every turn is DEFEAT");
         checkEquals(0, r.paidCount(), "idle game pays nobody");
@@ -65,8 +67,8 @@ public final class GameTests {
     }
 
     private static void invalidInputDoesNotUseUpTheTurn() {
-        // turn 1: junk, an unknown customer, then a valid seat; chef waits
-        Object[] out = play("x\n9\n1\n7\n1\n1\n0\n");
+        // turn 1: no Happy Hour, junk, an unknown customer, then a valid seat; Host and Chef wait
+        Object[] out = play("n\nx\n9\n1\n7\n1\n1\n0\n0\n");
         String text = (String) out[0];
         check(text.contains("Please enter a valid number from 0 to 3"), "non-number is explained");
         check(text.contains("Customer 7 is not in the waiting queue"), "unknown customer is explained");
@@ -74,8 +76,19 @@ public final class GameTests {
     }
 
     private static void byteOrderMarkIsIgnored() {
-        Object[] out = play("﻿1\n1\n0\n");
+        Object[] out = play("﻿n\n1\n1\n0\n0\n");
         check(((String) out[0]).contains("Waiter seats C1 (Regular) at table 1"), "BOM before the first number is ignored");
+    }
+
+    private static void happyHourAndHostInAScriptedTurn() {
+        // turn 1: start Happy Hour, Waiter waits, Host seats C1, Chef waits. From turn 2 it is no longer offered.
+        Object[] out = play("y\n0\n1\n0\n" + "0\n0\n0\n");
+        String text = (String) out[0];
+        check(text.contains("HAPPY HOUR starts and lasts 2 turns"), "Happy Hour can be started");
+        check(text.contains("Host seats C1 (Regular) at table 1"), "the Host seats the queued customer");
+        check(text.contains("HAPPY HOUR ACTIVE: 1 turn(s) left"), "turn 2 shows one turn left");
+        check(text.indexOf("Start Happy Hour now?") == text.lastIndexOf("Start Happy Hour now?"),
+                "once used it is asked about only once");
     }
 
     // ---- bot ----
@@ -86,7 +99,9 @@ public final class GameTests {
         private GameController game;
         private byte[] pending = new byte[0];
         private int pos;
-        private int stage;                // 0 waiter choice, 1 customer id, 2 chef id
+        // The prompt the game will ask next
+        private enum Prompt { HAPPY_HOUR, WAITER, WAITER_ID, HOST, CHEF }
+        private Prompt prompt = Prompt.HAPPY_HOUR;
         private Task waiterTask = Task.WAITING;
         private int waiterTarget;
         final List<String> problems = new ArrayList<>();
@@ -99,17 +114,34 @@ public final class GameTests {
             audit();
             ManagerView view = game.getManagerView();
             String line;
-            switch (stage) {
-                case 0 -> {
+            switch (prompt) {
+                case HAPPY_HOUR -> {
+                    boolean yes = random == null ? game.getResult().getTurnNo() >= 11 : random.nextInt(5) == 0;
+                    line = yes ? "y" : "n";
+                    prompt = Prompt.WAITER;
+                }
+                case WAITER -> {
                     waiterTask = chooseWaiterTask(view);
                     waiterTarget = waiterTask == Task.WAITING ? 0 : pick(view.getTasks(waiterTask));
                     line = String.valueOf(waiterTask == Task.WAITING ? 0
                             : waiterTask == Task.SEATING ? 1 : waiterTask == Task.ORDERING ? 2 : 3);
-                    stage = waiterTask == Task.WAITING ? 2 : 1;
+                    prompt = waiterTask == Task.WAITING ? Prompt.HOST : Prompt.WAITER_ID;
                 }
-                case 1 -> {
+                case WAITER_ID -> {
                     line = String.valueOf(waiterTarget);
-                    stage = 2;
+                    prompt = Prompt.HOST;
+                }
+                case HOST -> {
+                    List<Integer> queue = new ArrayList<>(view.getTasks(Task.SEATING));
+                    boolean waiterSeating = waiterTask == Task.SEATING;
+                    if (waiterSeating) {
+                        queue.remove(Integer.valueOf(waiterTarget));
+                    }
+                    boolean freeTable = game.getRestaurant().countOccupiedTables() + (waiterSeating ? 1 : 0)
+                            < BaseSetting.NUM_TABLES;
+                    boolean seat = freeTable && !queue.isEmpty() && (random == null || random.nextInt(3) > 0);
+                    line = String.valueOf(seat ? pick(queue) : 0);
+                    prompt = Prompt.CHEF;
                 }
                 default -> {
                     List<Integer> cookable = new ArrayList<>(view.getTasks(Task.COOKING));
@@ -117,7 +149,8 @@ public final class GameTests {
                         cookable.add(waiterTarget);
                     }
                     line = String.valueOf(cookable.isEmpty() ? 0 : pick(cookable));
-                    stage = 0;
+                    // The next turn asks about Happy Hour only while it is unused
+                    prompt = game.getRestaurant().getHappyHour().isAvailable() ? Prompt.HAPPY_HOUR : Prompt.WAITER;
                 }
             }
             return line + "\n";

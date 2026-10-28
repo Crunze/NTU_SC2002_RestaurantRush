@@ -2,6 +2,7 @@ package NTUBurger;
 
 import java.util.List;
 
+import NTUBurger.Restaurant.ComboMeal;
 import NTUBurger.Restaurant.MenuItem;
 
 // Base Config, final prevents this class from having subclasses, NOT A Superclass
@@ -16,6 +17,7 @@ public final class BaseSetting {
 
     // Staff
     public static final int NUM_WAITERS = 1;
+    public static final int NUM_HOSTS = 1;
     public static final int NUM_CHEFS = 1;
     public static final int NUM_CASHIERS = 1;
 
@@ -37,5 +39,15 @@ public final class BaseSetting {
     public static final MenuItem PASTA  = new MenuItem("Pasta", 1800, 2);
 
     // .of() : bundles individual item into an unmodifiable list
-    public static final List<MenuItem> MENU = List.of(SALAD, BURGER, PASTA);
+    // Combo meals: two dishes sold together at 90% of their prices, taking the sum of their prep units
+    public static final MenuItem COMBO_A = new ComboMeal("Combo A (Salad + Burger)", SALAD, BURGER);
+    public static final MenuItem COMBO_B = new ComboMeal("Combo B (Salad + Pasta)", SALAD, PASTA);
+
+    // Single dishes first, then the combos
+    public static final List<MenuItem> MENU = List.of(SALAD, BURGER, PASTA, COMBO_A, COMBO_B);
+
+    // Happy Hour: once per game
+    public static final int HAPPY_HOUR_TURNS = 2;
+    public static final int HAPPY_HOUR_DISCOUNT_PERCENT = 20;
+    public static final int HAPPY_HOUR_RECOVERY = 15;
 }

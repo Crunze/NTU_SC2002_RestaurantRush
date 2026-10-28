@@ -69,6 +69,31 @@ public class ManagerMenu {
                 customerId.isEmpty() ? StaffAction.WAIT : new StaffAction(task, customerId.getAsInt()));
     }
 
+    public void promptHost() {
+        System.out.println("Which queued customer should the host seat?");
+        System.out.println("Enter the customer id to seat, or 0 to Wait.");
+        OptionalInt customerId = readInt("Customer id: ", 0, 999999999);
+        managerChoice.put(StaffRole.HOST,
+                customerId.isEmpty() || customerId.getAsInt() == 0
+                        ? StaffAction.WAIT : new StaffAction(Task.SEATING, customerId.getAsInt()));
+    }
+
+    // Start of turn, until Happy Hour has been used: true if the manager starts it now
+    // Closed input counts as "no"
+    public boolean askHappyHour() {
+        while (true) {
+            System.out.print("Start Happy Hour now? It can only be used once. (yes/no): ");
+            if (!scanner.hasNextLine()) {
+                System.out.println("(input closed - no)");
+                return false;
+            }
+            String answer = scanner.nextLine().replace("\uFEFF", "").trim().toLowerCase();
+            if (answer.equals("yes") || answer.equals("y")) { return true; }
+            if (answer.equals("no") || answer.equals("n")) { return false; }
+            System.out.println("Please answer yes or no.");
+        }
+    }
+
     public void promptChef() {
         System.out.println("What order should chef prepare?");
         System.out.println("Enter the customer id whose order to cook, or 0 to Wait.");

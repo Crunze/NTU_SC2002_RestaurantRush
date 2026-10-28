@@ -12,6 +12,7 @@ import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
 import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
+import NTUBurger.Roles.Host;
 import NTUBurger.Roles.Waiter;
 
 // Instantiate the environment: Restaurant, the people (Staff, Customer)
@@ -22,10 +23,14 @@ public class GameApp {
         // Chosen seed value to be 18.
         Random random = new Random(18);
 
-        //Creating Waiter/Chef/Cashier
+        //Creating Waiter/Host/Chef/Cashier
         List<Waiter> waiters = new ArrayList<>();
         for (int i=0; i<BaseSetting.NUM_WAITERS; i++){
             waiters.add(new Waiter(i+1));
+        }
+        List<Host> hosts = new ArrayList<>();
+        for (int i=0; i<BaseSetting.NUM_HOSTS; i++){
+            hosts.add(new Host(i+1));
         }
         List<Chef> chefs = new ArrayList<>();
         for (int i=0; i<BaseSetting.NUM_CHEFS; i++){
@@ -44,7 +49,7 @@ public class GameApp {
         ChoiceValidator validator = new ChoiceValidator(managerView, restaurant);
         ManagerMenu menu = new ManagerMenu(scanner, validator);
         GameController gameController = new GameController(restaurant, stateManager, managerView, menu, validator,
-                waiters, chefs, cashiers);
+                waiters, hosts, chefs, cashiers);
         gameController.runGame();
     }
 }

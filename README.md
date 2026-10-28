@@ -1,7 +1,7 @@
-﻿# NTUBurger (Restaurant Rush)
+# NTUBurger (Restaurant Rush)
 
 A turn-based restaurant management game for the command line, written in Java for SC2002. You are the manager: each
-turn you give one task to the Waiter and one to the Chef, and the Cashier works on its own. Serve enough happy
+turn you give one task to the Waiter, the Host and the Chef, and the Cashier works on its own. Serve enough happy
 customers within 18 turns to win.
 
 ## Stages
@@ -14,7 +14,7 @@ The game is built in three stages, each its own commit and tag so that every sta
 | 2 | VIP and Critic customers | `base-stage-2` |
 | 3 | Host, Combo Meals and Happy Hour | `base-stage-3` |
 
-This README describes **Stage 2**. Stage 1 is unchanged except that C2 and C4 are no longer Regular.
+This README describes the current (**Stage 3**) game. Check out a tag to see an earlier stage.
 
 ## Requirements
 
@@ -30,7 +30,7 @@ This README describes **Stage 2**. Stage 1 is unchanged except that C2 and C4 ar
 
 ## The base setting (`BaseSetting.java`)
 
-- 18 turns, 2 tables, one Waiter, one Chef, one Cashier.
+- 18 turns, 2 tables, one Waiter, one Host, one Chef, one Cashier.
 - Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. C2 is a **VIP** and C4 is a **Critic**
   (set in `BaseSetting`); the rest are Regular.
 
@@ -41,37 +41,53 @@ This README describes **Stage 2**. Stage 1 is unchanged except that C2 and C4 ar
   | Critic | 12 | full price | always the dish with the most preparation units |
 
   The discount is `Customer.applyDiscount(priceCents)`, which takes the list price and returns the final price in cents.
-- Menu: Salad $9.00 (1 unit), Burger $15.00 (1 unit), Pasta $18.00 (2 units). Each customer picks a dish at random from
-  a fixed seed (18), so a run is reproducible; a Critic ignores the random choice.
+- Menu (each customer picks at random from a fixed seed, 18, so a run is reproducible; a Critic ignores the random choice):
+
+  | Item | Price | Chef units |
+  |------|-------|-----------|
+  | Salad | $9.00 | 1 |
+  | Burger | $15.00 | 1 |
+  | Pasta | $18.00 | 2 |
+  | Combo A (Salad + Burger) | $21.60 | 2 |
+  | Combo B (Salad + Pasta) | $24.30 | 3 |
+
+  A combo costs 90% of its two dishes together (rounded half up) and takes the sum of their units.
+- **Happy Hour**: once per game, lasts 2 turns. Orders taken during it get 20% off, and customers waiting for service
+  regain 15 satisfaction (up to 100) at the start of each of those turns. Orders taken before it keep their old price.
+  The VIP discount is applied on top, when the customer pays.
 - **Win** after turn 18: at least 4 customers paid, revenue of at least $45.00, and an average satisfaction of paid
   customers of at least 60. The game always plays all 18 turns.
 
 ## Turn order (`GameController`)
 
-1. Arrivals join the waiting queue; the board is shown.
-2. You choose the Waiter's task (seat / take order / serve / wait), then the Chef's order to cook (or wait).
-   An invalid choice prints why and asks again; it never uses up the turn.
-3. The Waiter acts first, then the Chef. The Chef can cook an order taken this turn, but the Waiter can never serve
-   food that the Chef finishes in the same turn.
+1. Arrivals join the waiting queue. While Happy Hour is unused you are asked whether to start it now; if it is active,
+   waiting customers recover. The board is shown.
+2. You choose the Waiter's task (seat / take order / serve / wait), then the Host's customer to seat (or wait), then the
+   Chef's order to cook (or wait). An invalid choice prints why and asks again; it never uses up the turn.
+   The Host cannot seat the customer the Waiter is seating, nor use a table the Waiter is taking.
+3. The Waiter acts first, then the Host, then the Chef. The Chef can cook an order taken this turn, but the Waiter can
+   never serve food that the Chef finishes in the same turn.
 4. The Cashier collects from the customer who has been ready to pay the longest (only customers who became ready on an
    earlier turn). Then customers served on an earlier turn finish eating.
 5. Customers still waiting or seated lose satisfaction. At 0 they leave and their order is cancelled.
-6. The end-of-turn summary is shown. After turn 18 the result is shown.
+6. An active Happy Hour loses one turn, and the end-of-turn summary is shown. After turn 18 the result is shown.
 
-If the input ends (closed stdin), every remaining prompt counts as "wait" and the game still finishes.
+If the input ends (closed stdin), every remaining prompt counts as "wait" (and Happy Hour as "no") and the game still
+finishes.
 
 ## Project layout
 
 ```
 NTUBurger/
   GameApp.java            entry point and wiring
-  GameController.java     the six-step turn loop (no rules, only sequencing)
-  BaseSetting.java        default configuration
+  GameController.java     the turn loop (no rules, only sequencing)
+  BaseSetting.java        default configuration: turns, tables, staff, arrivals, menu, Happy Hour
   DisplayController.java  all console output
   Result.java             revenue, average satisfaction, victory
   Manager/                the manager's choices: menu, validator, available tasks
-  Restaurant/             Restaurant (processes, tables), StateManager (status lists), Order, Table, views
-  Roles/                  Customer types, Waiter, Chef, Cashier
+  Restaurant/             Restaurant (processes, tables), StateManager (status lists), Order, Table, MenuItem,
+                          ComboMeal, HappyHour, read-only views
+  Roles/                  Customer types, CustomerFactory, Waiter, Host, Chef, Cashier
 test/NTUBurger/           dependency-free tests (TestRunner)
 ```
 

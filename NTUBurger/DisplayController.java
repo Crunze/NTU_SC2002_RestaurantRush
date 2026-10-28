@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import NTUBurger.Manager.ManagerView;
+import NTUBurger.Restaurant.HappyHour;
 import NTUBurger.Restaurant.Order;
 import NTUBurger.Restaurant.OrderStatus;
 import NTUBurger.Restaurant.StateView;
@@ -40,13 +41,20 @@ public class DisplayController {
         System.out.println(" >> " + label(customer) + " arrives and joins the queue.");
     }
 
-    public static void showStartOfTurn(ManagerView view, StateView stateView, TableView tableView, Result result) {
+    public static void showStartOfTurn(ManagerView view, StateView stateView, TableView tableView, Result result,
+                                       HappyHour happyHour) {
         System.out.println();
         System.out.println(RULE);
         System.out.println(" TURN " + result.getTurnNo() + " / " + BaseSetting.MAX_TURNS
                 + "     Revenue " + toDollars(result.revenue())
                 + "     Avg satisfaction (paid) " + formatAverage(result));
         System.out.println(RULE);
+        if (happyHour.isActive()) {
+            System.out.println(" HAPPY HOUR ACTIVE: " + happyHour.getRemainingTurns() + " turn(s) left, "
+                    + BaseSetting.HAPPY_HOUR_DISCOUNT_PERCENT + "% off new orders");
+        } else if (happyHour.isAvailable()) {
+            System.out.println(" Happy Hour: still available (once per game)");
+        }
 
         System.out.println(" Waiting Queue: " + idList(view.getTasks(Task.SEATING)));
 

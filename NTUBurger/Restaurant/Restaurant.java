@@ -5,6 +5,7 @@ import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerStatus;
+import NTUBurger.Roles.Seater;
 import NTUBurger.Roles.Waiter;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class Restaurant implements TableView{
     private final StateManager stateManager;
     private final Table[] tables;
     private final Random random;
+    private final HappyHour happyHour = new HappyHour();
 
     public Restaurant(StateManager stateManager, Random random){
         
@@ -31,6 +33,8 @@ public class Restaurant implements TableView{
             tables[i] = new Table(i+1);
         }
     }
+
+    public HappyHour getHappyHour(){ return happyHour; }
 
     // Return Table
     @Override 
@@ -47,9 +51,9 @@ public class Restaurant implements TableView{
     // Customer status: WAITING -> SEATED
     // The status change is INSIDE the action: updateCustomerState reads the status after the action runs,
     // so a change made outside it would leave the customer filed under the old status.
-    public void seatProcess(Waiter waiter, Customer customer, Table table){
+    public void seatProcess(Seater seater, Customer customer, Table table){
         stateManager.updateCustomerState(customer, () -> {
-            waiter.seatCustomer(customer.getId(), table);
+            seater.seatCustomer(customer.getId(), table);
             customer.seat();
         });
     }
@@ -63,7 +67,10 @@ public class Restaurant implements TableView{
     public void processNewOrder(Waiter waiter, Customer customer, List<MenuItem> menu){
         customer.chooseFood(menu, random);
         MenuItem food = customer.getChosenFood();
-        stateManager.addOrder(waiter.takeOrder(customer.getId(), food));
+        Order order = waiter.takeOrder(customer.getId(), food);
+        // The Happy Hour discount is locked into the order when it is taken; orders taken earlier keep their old price
+        order.setPrice(happyHour.apply(order.getPrice()));
+        stateManager.addOrder(order);
     }
 
     // Nested wrapper from both boilerplate to sync both customer n order state
@@ -124,5 +131,20 @@ public class Restaurant implements TableView{
         for (Table t : tables) {           
             if (t.getCustomerId() == customer.getId()) { t.free(); }
         }
+    }
+
+    // Start of turn: while Happy Hour is active, every customer still waiting for service regains satisfaction
+    // Returns a line per customer for the display
+    public List<String> processHappyHourRecovery(){
+        List<String> changes = new java.util.ArrayList<>();
+        if (!happyHour.isActive()){ return changes; }
+        for (CustomerStatus s : new CustomerStatus[]{ CustomerStatus.WAITING, CustomerStatus.SEATED}){
+            for (Customer c : stateManager.getCustomersByStatus(s)) {
+                int before = c.getSatisfaction();
+                c.gainSatisfaction(BaseSetting.HAPPY_HOUR_RECOVERY);
+                changes.add("#" + c.getId() + " " + before + " -> " + c.getSatisfaction());
+            }
+        }
+        return changes;
     }
 }

@@ -11,11 +11,13 @@ import NTUBurger.Manager.ManagerMenu;
 import NTUBurger.Manager.ManagerView;
 import NTUBurger.Manager.StaffAction;
 import NTUBurger.Manager.StaffRole;
+import NTUBurger.Restaurant.HappyHour;
 import NTUBurger.Restaurant.Order;
 import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
 import NTUBurger.Restaurant.Table;
 import NTUBurger.Roles.Cashier;
+import NTUBurger.Roles.Host;
 import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerFactory;
@@ -33,6 +35,7 @@ public class GameController {
     private final ManagerMenu managerMenu;
     private final ChoiceValidator validator;
     private final List<Waiter> waiters;
+    private final List<Host> hosts;
     private final List<Chef> chefs;
     private final List<Cashier> cashiers;
     private final Result result;
@@ -44,13 +47,14 @@ public class GameController {
 
     public GameController(Restaurant restaurant, StateManager stateManager,
         ManagerView managerView, ManagerMenu managerMenu, ChoiceValidator validator,
-        List<Waiter> waiters, List<Chef> chefs, List<Cashier> cashiers){
+        List<Waiter> waiters, List<Host> hosts, List<Chef> chefs, List<Cashier> cashiers){
         this.restaurant = restaurant;
         this.stateManager = stateManager;
         this.managerView = managerView;
         this.managerMenu = managerMenu;
         this.validator = validator;
         this.waiters = waiters;
+        this.hosts = hosts;
         this.chefs = chefs;
         this.cashiers = cashiers;
         this.result = new Result(stateManager, 0);
@@ -70,12 +74,28 @@ public class GameController {
             restaurant.updateArrivalQueue(customer);
             DisplayController.showArrival(customer);
         }
+        happyHourPhase();
         // Retrieve the most updated list
         managerView.refreshList();
-        DisplayController.showStartOfTurn(managerView, stateManager, restaurant, result);
+        DisplayController.showStartOfTurn(managerView, stateManager, restaurant, result, restaurant.getHappyHour());
     }
 
-    // Step 2: the manager picks one task for the Waiter, then one for the Chef
+    // Start of turn: offer Happy Hour while it is unused, then apply this turn's recovery if it is active
+    private void happyHourPhase(){
+        HappyHour happyHour = restaurant.getHappyHour();
+        if (happyHour.isAvailable() && managerMenu.askHappyHour()) {
+            happyHour.activate();
+            System.out.println(" ** HAPPY HOUR starts and lasts " + BaseSetting.HAPPY_HOUR_TURNS + " turns. **");
+        }
+        if (happyHour.isActive()) {
+            System.out.println(" ** HAPPY HOUR ** " + happyHour.getRemainingTurns() + " turn(s) left. +"
+                    + BaseSetting.HAPPY_HOUR_RECOVERY + " satisfaction for customers waiting for service:");
+            List<String> changes = restaurant.processHappyHourRecovery();
+            System.out.println(changes.isEmpty() ? "      (nobody is waiting)" : "      " + String.join(", ", changes));
+        }
+    }
+
+    // Step 2: the manager picks one task for the Waiter, then the Host, then the Chef
     private void step2(){
         // Reset ManagerChoice
         managerMenu.reset();
@@ -87,19 +107,27 @@ public class GameController {
         } while (!check.valid());
 
         do {
+            managerMenu.promptHost();
+            check = validator.validateHost(managerMenu.getChoice(StaffRole.HOST), managerMenu.getChoice(StaffRole.WAITER));
+            if (!check.valid()) { System.out.println("Invalid: " + check.reason() + " Choose again."); }
+        } while (!check.valid());
+
+        do {
             managerMenu.promptChef();
             check = validator.validateChef(managerMenu.getChoice(StaffRole.CHEF), managerMenu.getChoice(StaffRole.WAITER));
             if (!check.valid()) { System.out.println("Invalid: " + check.reason() + " Choose again."); }
         } while (!check.valid());
     }
 
-    // Step 3: Waiter acts first, then the Chef
+    // Step 3: Waiter acts first, then the Host, then the Chef
     // The Chef can therefore cook an order the Waiter took this turn,
     // but the Waiter can never serve food the Chef finishes this turn
     private void step3() {
         StaffAction waiterAction = managerMenu.getChoice(StaffRole.WAITER);
         StaffAction chefAction = managerMenu.getChoice(StaffRole.CHEF);
+        StaffAction hostAction = managerMenu.getChoice(StaffRole.HOST);
         Waiter waiter = waiters.get(0);
+        Host host = hosts.get(0);
         Chef chef = chefs.get(0);
 
         if (!waiterAction.isWait()) {
@@ -127,6 +155,12 @@ public class GameController {
                 }
                 default -> throw new IllegalStateException("Not a Waiter task: " + waiterAction.task());
             }
+        }
+        if (!hostAction.isWait()) {
+            Customer customer = stateManager.findCustomerById(hostAction.customerId());
+            Table table = restaurant.firstFreeTable();
+            restaurant.seatProcess(host, customer, table);
+            events.add("Host seats " + DisplayController.label(customer) + " at table " + table.getNumber() + ".");
         }
         if (!chefAction.isWait()) {
             Customer customer = stateManager.findCustomerById(chefAction.customerId());
@@ -184,6 +218,7 @@ public class GameController {
 
     // Step 6: end-of-turn summary
     private void step6(){
+        restaurant.getHappyHour().endTurn();
         DisplayController.showEndOfTurn(result, events);
     }
 

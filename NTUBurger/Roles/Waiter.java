@@ -7,13 +7,14 @@ import NTUBurger.Restaurant.Table;
 // Instantiate Order since created by Waiter
 // No wait() since it does nothing and more of Manager Choice
 
-public class Waiter extends Staff {
+public class Waiter extends Staff implements Seater {
 
     public Waiter(int id){
         super(id);
     }
 
     // Waiter assigns table to customer
+    @Override
     public void seatCustomer(int customerId, Table table){
         table.seat(customerId);
     }

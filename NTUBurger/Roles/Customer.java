@@ -59,6 +59,11 @@ public abstract class Customer {
         return satisfaction==0;
     }
 
+    // Happy Hour recovery, capped at the starting satisfaction
+    public void gainSatisfaction(int amount){
+        satisfaction = Math.min(100, satisfaction + amount);
+    }
+
     // Deduct Satisfaction score per FoodNotServed Turn
     public void loseSatisfaction(){
         satisfaction = Math.max(0, satisfaction - satisfactionLossPerTurn());
