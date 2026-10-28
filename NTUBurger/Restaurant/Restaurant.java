@@ -54,19 +54,6 @@ public class Restaurant implements TableView{
         });
     }
 
-    // Queue Operation - process of seating customer, requires edit
-    public void processQueue(Waiter waiter){
-        List<Customer> queueList = stateManager.getCustomersByStatus(CustomerStatus.WAITING);
-        if (queueList.isEmpty()){ return; } // No one in queue! Need test Exception Handling
-        
-        for (Table table : tables){
-            if (!table.isOccupied()){
-                seatProcess(waiter, queueList.get(0), table); // if we want Customer 2 to seat before Customer 1, need edit
-                break;
-            }
-        }
-    }
-
     // Order Status: PLACED -> COOKING || READY \ COOKING -> READY
     public void preparingFood(Chef chef, Order order){
         stateManager.updateOrderState(order, () -> chef.cooking(order));

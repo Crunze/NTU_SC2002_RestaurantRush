@@ -45,16 +45,4 @@ public class Order {
     // If Customer left, cancel order
     public void cancelOrder(){ status = OrderStatus.CANCELLED; }
 
-    // True if cooked finish
-    public boolean isOrderReady(){ return status == OrderStatus.READY; }
-
-    // True if food is served
-    public boolean isServed(){ return status == OrderStatus.SERVED; }
-
-    // True if food is paid
-    public boolean isPaid(){ return status == OrderStatus.PAID; }
-
-    // True if food is Cancelled
-    public boolean isCancelled(){ return status == OrderStatus.CANCELLED; }
-
 }
