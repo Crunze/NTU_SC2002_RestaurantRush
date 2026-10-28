@@ -44,11 +44,6 @@ public abstract class Customer {
     public void pay() { status = CustomerStatus.PAID; }
     public void abandon() { status = CustomerStatus.ABANDONED; }
 
-    // True if food received by Customer
-    public boolean hasReceivedFood(){
-        return status == CustomerStatus.SERVED || status == CustomerStatus.READY_TO_PAY || status == CustomerStatus.PAID;
-    }
-
     // True if Customer Angry
     public boolean isSatisfactionZero(){
         return satisfaction==0;

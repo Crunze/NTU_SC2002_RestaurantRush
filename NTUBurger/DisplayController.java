@@ -10,7 +10,6 @@ import NTUBurger.Restaurant.StateView;
 import NTUBurger.Restaurant.Table;
 import NTUBurger.Restaurant.TableView;
 import NTUBurger.Roles.Customer;
-import NTUBurger.Roles.CustomerStatus;
 import NTUBurger.Manager.Task;
 
 // Just display
