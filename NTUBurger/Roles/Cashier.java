@@ -11,10 +11,9 @@ public class Cashier extends Staff {
     }
 
     public void processPayment(Order order, Customer customer){
-        int originalPrice = order.getPrice();
-        int totalPrice = originalPrice - (customer.discount() * originalPrice);
-        order.setPrice(totalPrice);
+        order.setPrice(customer.applyDiscount(order.getPrice()));
         order.paid();
+        customer.pay();
     }
 
 }
