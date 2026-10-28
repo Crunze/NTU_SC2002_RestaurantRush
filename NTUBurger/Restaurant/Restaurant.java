@@ -45,9 +45,29 @@ public class Restaurant implements TableView{
     }
 
     // Customer status: WAITING -> SEATED
+    // The status change is INSIDE the action: updateCustomerState reads the status after the action runs,
+    // so a change made outside it would leave the customer filed under the old status.
     public void seatProcess(Waiter waiter, Customer customer, Table table){
-        stateManager.updateCustomerState(customer, () -> waiter.seatCustomer(customer.getId(), table));
-        customer.seat();
+        stateManager.updateCustomerState(customer, () -> {
+            waiter.seatCustomer(customer.getId(), table);
+            customer.seat();
+        });
+    }
+
+    // Lowest-numbered free table, or null if every table is taken
+    public Table firstFreeTable(){
+        for (Table table : tables){
+            if (!table.isOccupied()){ return table; }
+        }
+        return null;
+    }
+
+    // Table the customer is sitting at, or null
+    public Table findTableOf(Customer customer){
+        for (Table table : tables){
+            if (table.getCustomerId() == customer.getId()){ return table; }
+        }
+        return null;
     }
 
     // Queue Operation - process of seating customer, requires edit
@@ -80,10 +100,10 @@ public class Restaurant implements TableView{
     // Customer Status: SEATED -> SERVED
     // Order Status: READY -> SERVED
     public void processServeOrder(Waiter waiter, Customer customer, Order order, int turnNo){
-        stateManager.updateCustomerState(customer, () ->
-            stateManager.updateOrderState(order, () -> waiter.serveOrder(order)
-            ));
-        customer.eat(turnNo);
+        stateManager.updateCustomerState(customer, () -> {
+            stateManager.updateOrderState(order, () -> waiter.serveOrder(order));
+            customer.eat(turnNo);
+        });
     }
 
     // Customer Status: SERVED -> READY TO PAY

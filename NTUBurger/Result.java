@@ -41,6 +41,10 @@ public class Result {
         stateView.getCustomersByStatus(CustomerStatus.PAID).size();
     }
 
+    public int paidCount(){
+        return stateView.getCustomersByStatus(CustomerStatus.PAID).size();
+    }
+
     public int unhappyDeparture(){
         return stateView.getCustomersByStatus(CustomerStatus.ABANDONED).size();
     }

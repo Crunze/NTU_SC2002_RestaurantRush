@@ -1,59 +1,76 @@
-# NTUBurger
+# NTUBurger (Restaurant Rush)
 
-A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Players manage customers, waiters, chefs and a cashier across three stages.
+A turn-based restaurant management game for the command line, written in Java for SC2002. You are the manager: each
+turn you give one task to the Waiter and one to the Chef, and the Cashier works on its own. Serve enough happy
+customers within 18 turns to win.
 
-> **Status:** Stage 1 work in progress
+## Stages
 
-## Features
+The game is built in three stages, each its own commit and tag so that every stage can be built, run and tested alone.
 
-- Menu and order management
-- Roles: customer, waiter, chef, cashier
-- Three game stages
+| Stage | Adds | Tag |
+|-------|------|-----|
+| 1 | Base game: Regular customers, Waiter, Chef, Cashier | `base-stage-1` |
+| 2 | VIP and Critic customers | `base-stage-2` |
+| 3 | Host, Combo Meals and Happy Hour | `base-stage-3` |
 
-## Requirements *(to be confirmed)*
+This README describes **Stage 1**.
 
-- Java JDK 17 or later (adjust to your version)
+## Requirements
 
-## How to Run *(to be confirmed)*
+- JDK 17 or newer. No other dependencies.
 
-1. Clone the repo
-2. Open the folder in VS Code
-3. Run `GameApp.java`
+## Build, run, test (Windows)
 
-## Project Structure
+| Task | Command |
+|------|---------|
+| Build | `build.bat` |
+| Play | `run.bat` |
+| Run all tests | `test.bat` |
 
-- `Restaurant/`: menu and restaurant classes
-- `Roles/`: role classes
-- `GameApp.java`: entry point
+## The base setting (`BaseSetting.java`)
 
-## Team
+- 18 turns, 2 tables, one Waiter, one Chef, one Cashier.
+- Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. Stage 1 customers are all Regular and lose
+  8 satisfaction per turn while waiting or seated without being served.
+- Menu: Salad $9.00 (1 unit), Burger $15.00 (1 unit), Pasta $18.00 (2 units). Each customer picks a dish at random from
+  a fixed seed (18), so a run is reproducible.
+- **Win** after turn 18: at least 4 customers paid, revenue of at least $45.00, and an average satisfaction of paid
+  customers of at least 60. The game always plays all 18 turns.
 
-- Your Name
-- Teammate names
+## Turn order (`GameController`)
 
----
+1. Arrivals join the waiting queue; the board is shown.
+2. You choose the Waiter's task (seat / take order / serve / wait), then the Chef's order to cook (or wait).
+   An invalid choice prints why and asks again; it never uses up the turn.
+3. The Waiter acts first, then the Chef. The Chef can cook an order taken this turn, but the Waiter can never serve
+   food that the Chef finishes in the same turn.
+4. The Cashier collects from the customer who has been ready to pay the longest (only customers who became ready on an
+   earlier turn). Then customers served on an earlier turn finish eating.
+5. Customers still waiting or seated lose satisfaction. At 0 they leave and their order is cancelled.
+6. The end-of-turn summary is shown. After turn 18 the result is shown.
 
-# Development Notes
+If the input ends (closed stdin), every remaining prompt counts as "wait" and the game still finishes.
 
-## To Be Implemented (High Priority)
+## Project layout
 
-1. **GameController**: the core that runs all classes and objects
-2. **GameApp**: entry point of the program and initialisation of all core classes
-3. **Exception handling** for all classes
-4. **Access modifiers**: adjust (public/protected/private) according to security needs for all classes
+```
+NTUBurger/
+  GameApp.java            entry point and wiring
+  GameController.java     the six-step turn loop (no rules, only sequencing)
+  BaseSetting.java        default configuration
+  DisplayController.java  all console output
+  Result.java             revenue, average satisfaction, victory
+  Manager/                the manager's choices: menu, validator, available tasks
+  Restaurant/             Restaurant (processes, tables), StateManager (status lists), Order, Table, views
+  Roles/                  Customer types, Waiter, Chef, Cashier
+test/NTUBurger/           dependency-free tests (TestRunner)
+```
 
-## Missing Project Requirements (High Priority)
+## Testing
 
-1. **GameController turn order (Ongoing)**
-   - Waiter must run first, then Chef
-   - This lets the Chef cook the current turn's order taken by the Waiter
-   - But the Waiter must not serve READY food made by the Chef in the same turn
-
-## Future Design Considerations
-
-1. **Configurable staff and actions** *(low priority)*
-   - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters
-   - The game must be ready to adjust accordingly
+`test.bat` runs rule-level tests plus whole-game tests: scripted input, input that ends early, a strategy bot that
+wins the base game, and 300 random games in which the status lists, tables and satisfaction are audited at every prompt.
 
 ---
 

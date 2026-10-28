@@ -27,6 +27,8 @@ public abstract class Customer {
     public CustomerStatus getStatus() { return status; }
     public MenuItem getChosenFood() { return chosenFood; }
     public int finishEatingTurn(){ return finishEatingTurn; }
+    // Human-readable type, e.g. CustomerRegular -> Regular
+    public String getTypeLabel(){ return getClass().getSimpleName().replace("Customer", ""); }
 
     // Customer Actions
     public void seat() { status = CustomerStatus.SEATED; }
@@ -59,5 +61,7 @@ public abstract class Customer {
 
     // Abstract methods for different customer
     public abstract int satisfactionLossPerTurn();
-    public abstract int discount();
+    // Takes the list price in cents and returns the final price in cents.
+    // Done in integer cents on purpose: a percentage stored as an int (10) times a price would overshoot.
+    public abstract int applyDiscount(int priceCents);
 }

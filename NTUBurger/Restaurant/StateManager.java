@@ -74,7 +74,11 @@ public class StateManager implements StateView {
         action.run(); // Placeholder action
         OrderStatus newStatus = order.getStatus();
 
-        // if (oldStatus == newStatus) return; <-- Exception might be needed
+        // COOKING -> COOKING is normal for a multi-unit dish; any other unchanged status means the action did nothing
+        if (oldStatus == newStatus) {
+            if (oldStatus == OrderStatus.COOKING) { return; }
+            throw new IllegalStateException("Order of customer " + order.getCustomerId() + " stayed " + oldStatus);
+        }
 
         orderState.get(oldStatus).remove(order);
         orderState.get(newStatus).add(order);
@@ -86,9 +90,33 @@ public class StateManager implements StateView {
         action.run(); // Placeholder action
         CustomerStatus newStatus = customer.getStatus();
 
-        // if (oldStatus == newStatus) return; <-- Exception might be needed
+        // An unchanged status means the status change happened outside the action (or not at all)
+        if (oldStatus == newStatus) {
+            throw new IllegalStateException("Customer " + customer.getId() + " stayed " + oldStatus);
+        }
 
         customerState.get(oldStatus).remove(customer);
         customerState.get(newStatus).add(customer);
+    }
+
+    // True if every customer/order sits in exactly one list, the one matching its own status
+    public boolean isConsistent(){
+        int customers = 0;
+        for (Map.Entry<CustomerStatus, List<Customer>> entry : customerState.entrySet()){
+            for (Customer customer : entry.getValue()){
+                if (customer.getStatus() != entry.getKey()){ return false; }
+                customers++;
+            }
+        }
+        int orders = 0;
+        for (Map.Entry<OrderStatus, List<Order>> entry : orderState.entrySet()){
+            for (Order order : entry.getValue()){
+                if (order.getStatus() != entry.getKey()){ return false; }
+                orders++;
+            }
+        }
+        long distinctCustomers = customerState.values().stream().flatMap(List::stream).distinct().count();
+        long distinctOrders = orderState.values().stream().flatMap(List::stream).distinct().count();
+        return customers == distinctCustomers && orders == distinctOrders;
     }
 }

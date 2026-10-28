@@ -1,7 +1,5 @@
-/*
-!/NTUBurger/
-!/.gitignore
-!/README.md
-*.class
-bin/
 out/
+out-test/
+bin/
+*.class
+.vscode/

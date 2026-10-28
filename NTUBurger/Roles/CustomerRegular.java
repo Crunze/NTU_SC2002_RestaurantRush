@@ -12,7 +12,7 @@ public class CustomerRegular extends Customer{
     @Override
     public int satisfactionLossPerTurn(){ return 8; }
 
-    // To be written as Full amt - 0.0 x Full amt = AmountToPay
+    // Regular customers pay the full price
     @Override 
-    public int discount(){ return 0; }
+    public int applyDiscount(int priceCents){ return priceCents; }
 }
