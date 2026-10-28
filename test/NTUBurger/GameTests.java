@@ -41,8 +41,8 @@ public final class GameTests {
         System.setOut(new PrintStream(captured, true, StandardCharsets.UTF_8));
         Result result;
         try {
-            result = GameApp.play(new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8))),
-                    new Random(GameApp.SEED));
+            result = TestGame.play(new Scanner(new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8))),
+                    new Random(TestGame.SEED));
         } finally {
             System.setOut(original);
         }
@@ -198,7 +198,7 @@ public final class GameTests {
         PrintStream original = System.out;
         System.setOut(new PrintStream(new ByteArrayOutputStream()));
         try {
-            GameController game = GameApp.create(new Scanner(bot), new Random(seed));
+            GameController game = TestGame.create(new Scanner(bot), new Random(seed));
             bot.attach(game);
             game.runGame();
             return game.getResult();
@@ -209,7 +209,7 @@ public final class GameTests {
 
     private static void greedyBotWins() {
         Bot bot = new Bot(null);
-        Result r = playBot(bot, GameApp.SEED);
+        Result r = playBot(bot, TestGame.SEED);
         checkEquals(List.of(), bot.problems, "greedy bot: no invariant violations");
         check(r.paidCount() >= 1, "greedy bot gets customers paid");
         check(r.isVictory(), "a sensible strategy wins the base game (paid " + r.paidCount()
