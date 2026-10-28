@@ -1,4 +1,4 @@
-# NTUBurger (Restaurant Rush)
+﻿# NTUBurger (Restaurant Rush)
 
 A turn-based restaurant management game for the command line, written in Java for SC2002. You are the manager: each
 turn you give one task to the Waiter and one to the Chef, and the Cashier works on its own. Serve enough happy
@@ -14,7 +14,7 @@ The game is built in three stages, each its own commit and tag so that every sta
 | 2 | VIP and Critic customers | `base-stage-2` |
 | 3 | Host, Combo Meals and Happy Hour | `base-stage-3` |
 
-This README describes **Stage 1**.
+This README describes **Stage 2**. Stage 1 is unchanged except that C2 and C4 are no longer Regular.
 
 ## Requirements
 
@@ -31,10 +31,18 @@ This README describes **Stage 1**.
 ## The base setting (`BaseSetting.java`)
 
 - 18 turns, 2 tables, one Waiter, one Chef, one Cashier.
-- Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. Stage 1 customers are all Regular and lose
-  8 satisfaction per turn while waiting or seated without being served.
+- Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. C2 is a **VIP** and C4 is a **Critic**
+  (set in `BaseSetting`); the rest are Regular.
+
+  | Type | Satisfaction lost per turn while waiting or seated | Bill | Dish |
+  |------|------------------------------------------------------|------|------|
+  | Regular | 8 | full price | random |
+  | VIP | 5 | 90% of the price, rounded half up | random |
+  | Critic | 12 | full price | always the dish with the most preparation units |
+
+  The discount is `Customer.applyDiscount(priceCents)`, which takes the list price and returns the final price in cents.
 - Menu: Salad $9.00 (1 unit), Burger $15.00 (1 unit), Pasta $18.00 (2 units). Each customer picks a dish at random from
-  a fixed seed (18), so a run is reproducible.
+  a fixed seed (18), so a run is reproducible; a Critic ignores the random choice.
 - **Win** after turn 18: at least 4 customers paid, revenue of at least $45.00, and an average satisfaction of paid
   customers of at least 60. The game always plays all 18 turns.
 

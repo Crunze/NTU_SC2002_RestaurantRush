@@ -14,8 +14,11 @@ import NTUBurger.Restaurant.Table;
 import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
+import NTUBurger.Roles.CustomerCritic;
+import NTUBurger.Roles.CustomerFactory;
 import NTUBurger.Roles.CustomerRegular;
 import NTUBurger.Roles.CustomerStatus;
+import NTUBurger.Roles.CustomerVIP;
 import NTUBurger.Roles.Waiter;
 
 // Rule-level tests that need no console
@@ -29,6 +32,7 @@ public final class UnitTests {
         tables();
         stateManagerGuards();
         fullLifecycleKeepsStatusFilingInSync();
+        customerTypes();
     }
 
     private static void customerBasics() {
@@ -128,5 +132,52 @@ public final class UnitTests {
         checkEquals(OrderStatus.PAID, order.getStatus(), "and the order to PAID");
         check(sm.isConsistent(), "consistent after payment");
         checkEquals(0, r.countOccupiedTables(), "payment frees the table");
+    }
+
+    // Stage 2: VIP and Critic differ from Regular only through the overridden methods
+    private static void customerTypes() {
+        Customer vip = new CustomerVIP(2);
+        Customer critic = new CustomerCritic(4);
+        vip.loseSatisfaction();
+        critic.loseSatisfaction();
+        checkEquals(95, vip.getSatisfaction(), "VIP loses 5 per turn");
+        checkEquals(88, critic.getSatisfaction(), "Critic loses 12 per turn");
+        checkEquals(1350, vip.applyDiscount(1500), "VIP pays 90% of a burger");
+        checkEquals(810, vip.applyDiscount(900), "VIP pays 90% of a salad");
+        checkEquals(1620, vip.applyDiscount(1800), "VIP pays 90% of a pasta");
+        checkEquals(815, vip.applyDiscount(905), "814.5 rounds half up to 815");
+        checkEquals(814, vip.applyDiscount(904), "813.6 rounds to 814");
+        checkEquals(1500, critic.applyDiscount(1500), "Critic pays full price");
+        checkEquals("VIP", vip.getTypeLabel(), "VIP label");
+        checkEquals("Critic", critic.getTypeLabel(), "Critic label");
+
+        for (int seed = 0; seed < 20; seed++) {
+            critic.chooseFood(BaseSetting.MENU, new Random(seed));
+            checkEquals("Pasta", critic.getChosenFood().getName(), "Critic always orders the dish with most prep units");
+        }
+
+        checkEquals("Regular", CustomerFactory.create(1).getTypeLabel(), "C1 is Regular");
+        checkEquals("VIP", CustomerFactory.create(2).getTypeLabel(), "C2 is VIP");
+        checkEquals("Regular", CustomerFactory.create(3).getTypeLabel(), "C3 is Regular");
+        checkEquals("Critic", CustomerFactory.create(4).getTypeLabel(), "C4 is Critic");
+        checkEquals("Regular", CustomerFactory.create(5).getTypeLabel(), "C5 is Regular");
+
+        // A VIP's burger is billed at the discounted price, and that is what counts as revenue
+        StateManager sm = new StateManager();
+        Restaurant r = new Restaurant(sm, new Random(1));
+        Waiter w = new Waiter(1);
+        Chef chef = new Chef(1);
+        Cashier cashier = new Cashier(1);
+        r.updateArrivalQueue(vip);
+        r.seatProcess(w, vip, r.firstFreeTable());
+        r.processNewOrder(w, vip, List.of(BaseSetting.BURGER));
+        Order order = sm.findOrderOf(vip);
+        r.preparingFood(chef, order);
+        r.processServeOrder(w, vip, order, 2);
+        r.processFinishEating(vip, 3);
+        r.processReadyToPay(cashier, vip, order, r.findTableOf(vip));
+        checkEquals(1350, order.getPrice(), "VIP burger is billed at 13.50");
+        checkEquals(1350, new Result(sm, 4).revenue(), "revenue counts the discounted bill");
+        check(sm.isConsistent(), "consistent after a VIP payment");
     }
 }

@@ -113,8 +113,10 @@ public class GameController {
                 case ORDERING -> {
                     restaurant.processNewOrder(waiter, customer, BaseSetting.MENU);
                     Order order = stateManager.findOrderOf(customer);
+                    int bill = customer.applyDiscount(order.getPrice());
                     events.add("Waiter takes " + DisplayController.label(customer) + "'s order: "
                             + customer.getChosenFood().getName() + " " + DisplayController.toDollars(order.getPrice())
+                            + (bill == order.getPrice() ? "" : " (customer pays " + DisplayController.toDollars(bill) + ")")
                             + " (" + customer.getChosenFood().getPrepUnits() + " unit(s)).");
                 }
                 case SERVING -> {
