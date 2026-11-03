@@ -1,6 +1,6 @@
 # NTUBurger
 
-A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Players manage customers, waiters, chefs and a cashier across three stages.
+A Java restaurant game for SC2002 Object-Oriented Design & Programming. Players manage customers, waiters, chefs and a cashier across three stages.
 
 > **Status:** Stage 1 work in progress
 
@@ -10,11 +10,11 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 - Roles: customer, waiter, chef, cashier
 - Three game stages
 
-## Requirements *(to be confirmed)*
+## Requirements 
 
-- Java JDK 17 or later (adjust to your version)
+- Java JDK 17 or later 
 
-## How to Run *(to be confirmed)*
+## How to Run 
 
 1. Clone the repo
 2. Open the folder in VS Code
@@ -35,29 +35,29 @@ A Java restaurant game for SC2002 (Object-Oriented Design & Programming). Player
 
 # Development Notes
 
-## To Be Implemented (High Priority)
+## To Be Implemented 
 
 1. **GameController**: the core that runs all classes and objects
 2. **GameApp**: entry point of the program and initialisation of all core classes
 3. **Exception handling** for all classes
 4. **Access modifiers**: adjust (public/protected/private) according to security needs for all classes
 
-## Missing Project Requirements (High Priority)
+## Missing Project Requirements 
 
-1. **GameController turn order (Ongoing)**
+1. **GameController turn order**
    - Waiter must run first, then Chef
    - This lets the Chef cook the current turn's order taken by the Waiter
    - But the Waiter must not serve READY food made by the Chef in the same turn
 
 ## Future Design Considerations
 
-1. **Configurable staff and actions** *(low priority)*
+1. **Configurable staff and actions** 
    - `BaseSetting` allows the TA to edit the number of Cashiers/Chefs/Waiters
    - The game must be ready to adjust accordingly
 
 ---
 
-# Game Design (Implemented)
+# Game Design 
 
 ## View Restrictions
 
