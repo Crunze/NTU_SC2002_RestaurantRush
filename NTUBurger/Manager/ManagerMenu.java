@@ -90,4 +90,13 @@ public class ManagerMenu {
         OptionalInt choice = readInt("1 = Yes, 0 = No: ", 0, 1);
         return choice.isPresent() && choice.getAsInt() == 1;
     }
+
+    public void promptHost() {
+        System.out.println("Which customer should the host seat?");
+        System.out.println("Enter the customer id to seat, or 0 to Wait.");
+        OptionalInt customerId = readInt("Customer id: ", 0, 999999999);
+        managerChoice.put(StaffRole.HOST,
+                customerId.isEmpty() || customerId.getAsInt() == 0
+                        ? StaffAction.WAIT : new StaffAction(Task.SEATING, customerId.getAsInt()));
+    }
 }

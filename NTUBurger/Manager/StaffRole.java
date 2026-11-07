@@ -4,5 +4,6 @@ package NTUBurger.Manager;
 
 public enum StaffRole {
     WAITER,
-    CHEF
+    CHEF,
+    HOST,
 }

@@ -72,4 +72,29 @@ public class ChoiceValidator {
 
         return Result.fail("Please enter a valid number from " + min + " to " + max + ".");
     }
+
+    public Result validateHost(StaffAction host, StaffAction waiter) {
+        if (host.isWait()) { return Result.PASSED; }
+
+        int id = host.customerId();
+
+        // 1. The customer must be in the waiting queue
+        if (!managerView.isAvailable(Task.SEATING, id)) {
+            return Result.fail("Customer " + id + " is not in the waiting queue.");
+        }
+
+        // 2. The Waiter must not be seating the same customer this turn
+        boolean waiterIsSeating = waiter.task() == Task.SEATING;
+        if (waiterIsSeating && waiter.customerId() == id) {
+            return Result.fail("The Waiter is already seating customer " + id + " this turn.");
+        }
+
+        // 3. A table must still be free after the Waiter's seating
+        int occupiedAfterWaiter = tableView.countOccupiedTables() + (waiterIsSeating ? 1 : 0);
+        if (occupiedAfterWaiter >= BaseSetting.NUM_TABLES) {
+            return Result.fail("There is no free table.");
+        }
+
+        return Result.PASSED;
+    }
 }

@@ -6,6 +6,7 @@ import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerStatus;
 import NTUBurger.Roles.Waiter;
+import NTUBurger.Roles.Host;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -51,9 +52,21 @@ public class Restaurant implements TableView{
     // The status change is INSIDE the action: updateCustomerState reads the status after the action runs,
     // so a change made outside it would leave the customer filed under the old status.
     public void seatProcess(Waiter waiter, Customer customer){
+        seatProcess(waiter, customer, firstFreeTable());
+    }
+
+    public void seatProcess(Waiter waiter, Customer customer, Table table){
+        seat(customer,table, () -> waiter.seatCustomer(customer.getId(), table));
+    }
+
+    public void seatProcess(Host host, Customer customer, Table table){
+        seat(customer,table, () -> host.seatCustomer(customer.getId(), table));
+    }
+
+    // Shared by Waiter and Host: the status change stays INSIDE the action so there is only one copy of the seating rule
+    private void seat(Customer customer, Table table, Runnable seatingAction){
         stateManager.updateCustomerState(customer, () -> {
-            Table table = firstFreeTable();
-            waiter.seatCustomer(customer.getId(), table);
+            seatingAction.run();
             customer.seat();
         });
     }

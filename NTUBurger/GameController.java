@@ -18,6 +18,7 @@ import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerFactory;
 import NTUBurger.Roles.Waiter;
+import NTUBurger.Roles.Host;
 
 // Controls the gameflow via 6 steps in a turn and ensure 18 turns max
 // Contains no rules: it only sequences calls to Restaurant, which owns the processes
@@ -33,6 +34,7 @@ public class GameController {
     private final Chef chef;
     private final List<Cashier> cashiers;
     private final Result result;
+    private final Host host;
 
     private int turn;
     private int nextCustomerId = 1;
@@ -41,13 +43,14 @@ public class GameController {
 
     public GameController(Restaurant restaurant, StateManager stateManager,
         ManagerView managerView, ManagerMenu managerMenu, ChoiceValidator validator,
-        Waiter waiter, Chef chef, List<Cashier> cashiers){
+        Waiter waiter, Chef chef, Host host, List<Cashier> cashiers){
         this.restaurant = restaurant;
         this.stateManager = stateManager;
         this.managerView = managerView;
         this.managerMenu = managerMenu;
         this.validator = validator;
         this.waiter = waiter;
+        this.host = host;
         this.chef = chef;
         this.cashiers = cashiers;
         this.result = new Result(stateManager, 0);
@@ -99,18 +102,29 @@ public class GameController {
         } while (!check.valid());
 
         do {
+            managerMenu.promptHost();
+            check = validator.validateHost(managerMenu.getChoice(StaffRole.HOST), managerMenu.getChoice(StaffRole.WAITER));
+            if (!check.valid()) { System.out.println("Invalid: " + check.reason() + " Choose again."); }
+        } while (!check.valid());
+
+
+        do {
             managerMenu.promptChef();
             check = validator.validateChef(managerMenu.getChoice(StaffRole.CHEF), managerMenu.getChoice(StaffRole.WAITER));
             if (!check.valid()) { System.out.println("Invalid: " + check.reason() + " Choose again."); }
         } while (!check.valid());
+    
     }
+        
 
     // Step 3: Waiter acts first, then the Chef
     // The Chef can therefore cook an order the Waiter took this turn,
     // but the Waiter can never serve food the Chef finishes this turn
     private void step3() {
         StaffAction waiterAction = managerMenu.getChoice(StaffRole.WAITER);
+        StaffAction hostAction = managerMenu.getChoice(StaffRole.HOST);
         StaffAction chefAction = managerMenu.getChoice(StaffRole.CHEF);
+    
 
         if (!waiterAction.isWait()) {
             Customer customer = stateManager.findCustomerById(waiterAction.customerId());
@@ -136,6 +150,14 @@ public class GameController {
                 default -> throw new IllegalStateException("Not a Waiter task: " + waiterAction.task());
             }
         }
+
+        if (!hostAction.isWait()) {
+            Customer customer = stateManager.findCustomerById(hostAction.customerId());
+            Table table = restaurant.firstFreeTable();
+            restaurant.seatProcess(host, customer, table);
+            events.add("Host seats " + DisplayController.label(customer) + " at table " + table.getNumber() + ".");
+        }
+
         if (!chefAction.isWait()) {
             Customer customer = stateManager.findCustomerById(chefAction.customerId());
             // Find the order AFTER the Waiter has acted, so an order taken this turn exists by now
