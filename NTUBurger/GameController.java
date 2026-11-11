@@ -135,7 +135,7 @@ public class GameController {
                     events.add("Waiter seats " + DisplayController.label(customer) + " at table " + table.getNumber() + ".");
                 }
                 case ORDERING -> {
-                    restaurant.processNewOrder(waiter, customer);
+                    restaurant.processNewOrder(waiter, customer, BaseSetting.MENU, BaseSetting.COMBOS);
                     Order order = stateManager.findOrderOf(customer.getId());
                     events.add("Waiter takes " + DisplayController.label(customer) + "'s order: "
                             + customer.getChosenFood().getName() + " " + DisplayController.toDollars(order.getPrice())

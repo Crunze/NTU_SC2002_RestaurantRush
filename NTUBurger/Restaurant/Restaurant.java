@@ -77,9 +77,10 @@ public class Restaurant implements TableView{
     }
 
     // Order Status: PLACED
-    public void processNewOrder(Waiter waiter, Customer customer){
-        List<MenuItem> menu = BaseSetting.MENU;
-        customer.chooseFood(menu, random);        
+    // every second customer (even id) is offered the combos instead of the single dishes
+    public void processNewOrder(Waiter waiter, Customer customer, List<MenuItem> menu, List<MenuItem> combos){
+        List<MenuItem> options = (customer.getId() % 2 == 0) ? combos : menu;
+        customer.chooseFood(options, random);
         MenuItem food = customer.getChosenFood();
         Order order = waiter.takeOrder(customer.getId(), food);
         // Price is locked when the order is taken: customer discount first (eg VIP), then Happy Hour

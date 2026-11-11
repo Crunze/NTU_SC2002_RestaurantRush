@@ -3,6 +3,7 @@ package NTUBurger;
 import java.util.List;
 
 import NTUBurger.Restaurant.MenuItem;
+import NTUBurger.Restaurant.ComboMeal;
 
 // Base Config, final prevents this class from having subclasses, NOT A Superclass
 // Specific number of Staff action, E.g., MAX_WAITER_TASK_PER_TURN should be in their own Role Class
@@ -40,6 +41,12 @@ public final class BaseSetting {
     public static final MenuItem SALAD  = new MenuItem("Salad", 900, 1);
     public static final MenuItem BURGER = new MenuItem("Burger", 1500, 1);
     public static final MenuItem PASTA  = new MenuItem("Pasta", 1800, 2);
+    public static final ComboMeal COMBO_SALAD_BURGER = new ComboMeal(SALAD, BURGER);
+    public static final ComboMeal COMBO_SALAD_PASTA = new ComboMeal(SALAD, PASTA);
+    public static final ComboMeal COMBO_PASTA_BURGER = new ComboMeal(PASTA, BURGER);
+    public static final List<MenuItem> COMBOS = List.of(COMBO_SALAD_BURGER, COMBO_SALAD_PASTA, COMBO_PASTA_BURGER);
+
+
 
     // .of() : bundles individual item into an unmodifiable list
     public static final List<MenuItem> MENU = List.of(SALAD, BURGER, PASTA);
