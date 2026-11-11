@@ -11,6 +11,7 @@ import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
 import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
+import NTUBurger.Roles.Host;
 import NTUBurger.Roles.Waiter;
 
 // Builds the same game as GameApp.main, but with the input and random seed supplied by the test.
@@ -30,7 +31,7 @@ final class TestGame {
         ChoiceValidator validator = new ChoiceValidator(managerView, restaurant);
         ManagerMenu menu = new ManagerMenu(scanner, validator);
         return new GameController(restaurant, stateManager, managerView, menu, validator,
-                new Waiter(1), new Chef(1), List.of(new Cashier(1)));
+                new Waiter(1), new Chef(1), new Host(1), List.of(new Cashier(1)));
     }
 
     static Result play(Scanner scanner, Random random) {
