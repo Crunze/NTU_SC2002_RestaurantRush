@@ -121,9 +121,9 @@ public final class UnitTests {
         r.processSatisfaction();
         checkEquals(before, c.getSatisfaction(), "a customer who has been served loses no satisfaction");
 
-        r.processFinishEating(c, 3);
+        r.processFinishEating(3);
         checkEquals(CustomerStatus.READY_TO_PAY, c.getStatus(), "customer is ready to pay");
-        r.processReadyToPay(cashier, c, order, r.findTableOf(c.getId()));
+        r.processReadyToPay(cashier);
         checkEquals(CustomerStatus.PAID, c.getStatus(), "payment moves the customer itself to PAID");
         checkEquals(OrderStatus.PAID, order.getStatus(), "and the order to PAID");
         check(sm.isConsistent(), "consistent after payment");

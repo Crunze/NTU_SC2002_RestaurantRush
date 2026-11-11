@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Optional;
 // Restaurant - Handles restuarant operations n processes
 // Owns Table so initialise table here
 
@@ -82,18 +83,36 @@ public class Restaurant implements TableView{
 
     // Customer Status: SERVED -> READY TO PAY
     // finishEatingTurn might not be needed since they are all tracked using a list, First to enter list = oldest
-    public void processFinishEating(Customer customer, int finishEatingTurn){
-        stateManager.updateCustomerState(customer, () -> customer.doneEating(finishEatingTurn));
+    public List<Customer> processFinishEating(int turn){
+        List<Customer> fullCustomers = new ArrayList<>();
+        for (Customer customer : stateManager.getCustomersByStatus(CustomerStatus.SERVED)){
+            if (customer.getServedTurn() < turn){
+                stateManager.updateCustomerState(customer, () -> customer.doneEating(turn));
+                fullCustomers.add(customer);
+            }
+        }
+        return fullCustomers;
     }
 
     // Customer Status: READY TO PAY -> PAID
     // Order Status: SERVED -> PAID
-    public void processReadyToPay(Cashier cashier, Customer customer, Order order, Table table){
+    public Optional<Receipt> processReadyToPay(Cashier cashier){
+        Optional<Customer> next = stateManager.getCustomersByStatus(CustomerStatus.READY_TO_PAY).stream().findFirst();
+        // No one ready to pay
+        if (next.isEmpty()) {return Optional.empty();}
+
+        Customer customer = next.get();
+        Order order = stateManager.findOrderOf(customer.getId());
+        Table table = findTableOf(customer.getId());
+        int tableNo = table.getNumber();
+
         stateManager.updateCustomerState(customer, () -> {
             stateManager.updateOrderState(order, () -> cashier.processPayment(order, customer));
             customer.pay();
         });
         table.free();
+
+        return Optional.of(new Receipt(customer.getId(), order.getPrice(), tableNo));
     }
 
     // WAITING and SEATED but UNSERVED Customers lose satisfaction and left at 0

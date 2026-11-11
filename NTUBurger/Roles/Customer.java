@@ -7,7 +7,6 @@ import NTUBurger.Restaurant.MenuItem;
 public abstract class Customer {
 
     private final int id;
-    //private final int arrivalTurn;  // Determine Oldest Customer
     private int servedTurn; // Determine when to pay
     private int satisfaction=100; // Starting Satisfaction
     private CustomerStatus status = CustomerStatus.WAITING;

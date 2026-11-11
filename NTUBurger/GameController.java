@@ -1,10 +1,7 @@
 package NTUBurger;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import NTUBurger.Manager.ChoiceValidator;
 import NTUBurger.Manager.ManagerMenu;
@@ -20,7 +17,6 @@ import NTUBurger.Roles.Cashier;
 import NTUBurger.Roles.Chef;
 import NTUBurger.Roles.Customer;
 import NTUBurger.Roles.CustomerFactory;
-import NTUBurger.Roles.CustomerStatus;
 import NTUBurger.Roles.Waiter;
 
 // Controls the gameflow via 6 steps in a turn and ensure 18 turns max
@@ -139,24 +135,15 @@ public class GameController {
     // then customers served on an earlier turn finish eating
     private void step4(){
         for (Cashier cashier : cashiers) {
-            List<Customer> eligible = new ArrayList<>(stateManager.getCustomersByStatus(CustomerStatus.READY_TO_PAY));
-            eligible.removeIf(c -> c.finishEatingTurn() >= turn);
-            // Oldest first; ties broken by lower id
-            eligible.sort(Comparator.comparingInt(Customer::finishEatingTurn).thenComparingInt(Customer::getId));
-            if (eligible.isEmpty()) { continue; }
-            Customer customer = eligible.get(0);
-            Order order = stateManager.findOrderOf(customer.getId());
-            Table table = restaurant.findTableOf(customer.getId());
-            restaurant.processReadyToPay(cashier, customer, order, table);
-            events.add("Cashier collects " + DisplayController.toDollars(order.getPrice()) + " from "
+            restaurant.processReadyToPay(cashier).ifPresent(receipt -> {
+            Customer customer = stateManager.findCustomerById(receipt.customerId());
+            events.add("Cashier collects " + DisplayController.toDollars(receipt.priceCents()) + " from "
                     + DisplayController.label(customer) + " (satisfaction " + customer.getSatisfaction()
-                    + "), table " + table.getNumber() + " is free.");
+                    + "), table " + receipt.tableNo() + " is free.");
+            });
         }
-        for (Customer customer : stateManager.getCustomersByStatus(CustomerStatus.SERVED)) {
-            if (customer.getServedTurn() < turn) {
-                restaurant.processFinishEating(customer, turn);
-                events.add(DisplayController.label(customer) + " finishes eating and is ready to pay.");
-            }
+        for (Customer customer : restaurant.processFinishEating(turn)) {
+            events.add(DisplayController.label(customer) + " finishes eating and is ready to pay.");
         }
     }
 
