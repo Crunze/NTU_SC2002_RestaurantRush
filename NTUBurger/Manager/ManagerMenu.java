@@ -36,16 +36,23 @@ public class ManagerMenu {
 
     // Re-prompts until a valid number is entered
     // Empty if the input has ended (closed stdin / end of a script), so the game can finish instead of crashing
+    // Handles running from file to support game test
     private OptionalInt readInt(String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);
+
+            // if stdin is closed or a piped file runs out of lines
             if (!scanner.hasNextLine()) {
                 System.out.println("(input closed - waiting)");
                 return OptionalInt.empty();
             }
+
             // A piped file can start with a byte-order mark, which would make the first number unreadable
-            String line = scanner.nextLine().replace("﻿", "");
+            // \uFeFF is byte-order mark (BOM), sits at first line of file. Remove BOM 
+            String line = scanner.nextLine().replace("\uFEFF", "");
+
             ChoiceValidator.Result result = validator.validateNumber(line, min, max);
+            
             // .valid() and .reason() are accessor from record Result in ChoiceValidator
             if (result.valid()) { return OptionalInt.of(Integer.parseInt(line.trim())); }
             // .reason() retrieve the failed message
