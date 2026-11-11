@@ -47,8 +47,9 @@ public class Restaurant implements TableView{
     // Customer status: WAITING -> SEATED
     // The status change is INSIDE the action: updateCustomerState reads the status after the action runs,
     // so a change made outside it would leave the customer filed under the old status.
-    public void seatProcess(Waiter waiter, Customer customer, Table table){
+    public void seatProcess(Waiter waiter, Customer customer){
         stateManager.updateCustomerState(customer, () -> {
+            Table table = firstFreeTable();
             waiter.seatCustomer(customer.getId(), table);
             customer.seat();
         });

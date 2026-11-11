@@ -104,7 +104,7 @@ public final class UnitTests {
         Customer c = new CustomerRegular(1);
         r.updateArrivalQueue(c);
 
-        r.seatProcess(w, c, r.firstFreeTable());
+        r.seatProcess(w, c);
         checkEquals(List.of(), sm.getCustomersByStatus(CustomerStatus.WAITING), "seated customer leaves WAITING");
         checkEquals(List.of(c), sm.getCustomersByStatus(CustomerStatus.SEATED), "seated customer is SEATED");
         check(sm.isConsistent(), "consistent after seating");

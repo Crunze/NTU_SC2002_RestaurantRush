@@ -99,15 +99,17 @@ public class GameController {
     private void step3() {
         StaffAction waiterAction = managerMenu.getChoice(StaffRole.WAITER);
         StaffAction chefAction = managerMenu.getChoice(StaffRole.CHEF);
+
+        // Retrieves the first Chef and Waiter
         Waiter waiter = waiters.get(0);
         Chef chef = chefs.get(0);
 
         if (!waiterAction.isWait()) {
             Customer customer = stateManager.findCustomerById(waiterAction.customerId());
             switch (waiterAction.task()) {
-                case SEATING -> {
-                    Table table = restaurant.firstFreeTable();
-                    restaurant.seatProcess(waiter, customer, table);
+                case SEATING -> {                    
+                    restaurant.seatProcess(waiter, customer);
+                    Table table = restaurant.findTableOf(customer.getId());
                     events.add("Waiter seats " + DisplayController.label(customer) + " at table " + table.getNumber() + ".");
                 }
                 case ORDERING -> {
