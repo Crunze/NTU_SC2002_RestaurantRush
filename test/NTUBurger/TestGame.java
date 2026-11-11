@@ -30,7 +30,7 @@ final class TestGame {
         ChoiceValidator validator = new ChoiceValidator(managerView, restaurant);
         ManagerMenu menu = new ManagerMenu(scanner, validator);
         return new GameController(restaurant, stateManager, managerView, menu, validator,
-                List.of(new Waiter(1)), List.of(new Chef(1)), List.of(new Cashier(1)));
+                new Waiter(1), new Chef(1), List.of(new Cashier(1)));
     }
 
     static Result play(Scanner scanner, Random random) {

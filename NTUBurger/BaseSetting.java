@@ -16,8 +16,12 @@ public final class BaseSetting {
     public static final int NUM_TABLES = 2;
 
     // Staff
+    // Only ONE waiter and ONE chef is supported
+    // Changing number here will only reflect in changing its ID
     public static final int NUM_WAITERS = 1;
     public static final int NUM_CHEFS = 1;
+
+    // Mutltiple Cashier is supported
     public static final int NUM_CASHIERS = 1;
 
     // List.of creates an unmodifiable list

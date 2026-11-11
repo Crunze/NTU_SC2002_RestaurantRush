@@ -32,8 +32,8 @@ public class GameController {
     private final ManagerView managerView;
     private final ManagerMenu managerMenu;
     private final ChoiceValidator validator;
-    private final List<Waiter> waiters;
-    private final List<Chef> chefs;
+    private final Waiter waiter;
+    private final Chef chef;
     private final List<Cashier> cashiers;
     private final Result result;
 
@@ -44,14 +44,14 @@ public class GameController {
 
     public GameController(Restaurant restaurant, StateManager stateManager,
         ManagerView managerView, ManagerMenu managerMenu, ChoiceValidator validator,
-        List<Waiter> waiters, List<Chef> chefs, List<Cashier> cashiers){
+        Waiter waiter, Chef chef, List<Cashier> cashiers){
         this.restaurant = restaurant;
         this.stateManager = stateManager;
         this.managerView = managerView;
         this.managerMenu = managerMenu;
         this.validator = validator;
-        this.waiters = waiters;
-        this.chefs = chefs;
+        this.waiter = waiter;
+        this.chef = chef;
         this.cashiers = cashiers;
         this.result = new Result(stateManager, 0);
     }
@@ -99,11 +99,6 @@ public class GameController {
     private void step3() {
         StaffAction waiterAction = managerMenu.getChoice(StaffRole.WAITER);
         StaffAction chefAction = managerMenu.getChoice(StaffRole.CHEF);
-
-        // Retrieves the first Chef and Waiter
-        // Plan to remove the list for waiter and chef
-        Waiter waiter = waiters.get(0);
-        Chef chef = chefs.get(0);
 
         if (!waiterAction.isWait()) {
             Customer customer = stateManager.findCustomerById(waiterAction.customerId());

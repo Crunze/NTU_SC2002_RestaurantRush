@@ -23,14 +23,11 @@ public class GameApp {
         Random random = new Random(BaseSetting.RANDOMSEED);
 
         //Creating Waiter/Chef/Cashier
-        List<Waiter> waiters = new ArrayList<>();
-        for (int i=0; i<BaseSetting.NUM_WAITERS; i++){
-            waiters.add(new Waiter(i+1));
-        }
-        List<Chef> chefs = new ArrayList<>();
-        for (int i=0; i<BaseSetting.NUM_CHEFS; i++){
-            chefs.add(new Chef(i+1));
-        }
+        // Only ONE waiter and ONE chef is supported
+        Waiter waiter = new Waiter(BaseSetting.NUM_WAITERS);
+        Chef chef = new Chef(BaseSetting.NUM_CHEFS);
+
+        // Multiple Cashier is supported
         List<Cashier> cashiers = new ArrayList<>();
         for (int i=0; i<BaseSetting.NUM_CASHIERS; i++){
             cashiers.add(new Cashier(i+1));
@@ -44,7 +41,7 @@ public class GameApp {
         ChoiceValidator validator = new ChoiceValidator(managerView, restaurant);
         ManagerMenu menu = new ManagerMenu(scanner, validator);
         GameController gameController = new GameController(restaurant, stateManager, managerView, menu, validator,
-                waiters, chefs, cashiers);
+                waiter, chef, cashiers);
         gameController.runGame();
     }
 }
