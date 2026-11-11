@@ -62,7 +62,7 @@ public class DisplayController {
         // Satisfaction + Order Status for each customers
         System.out.println(" Customers:");
         for (Customer customer : stateView.getActiveCustomers()) {
-            Order order = stateView.findOrderOf(customer);
+            Order order = stateView.findOrderOf(customer.getId());
             System.out.printf("   #%-3d %-8s %-13s satisfaction %-4s order %s%n",
                     customer.getId(),
                     customer.getTypeLabel(),

@@ -115,7 +115,7 @@ public class Restaurant implements TableView{
         stateManager.updateCustomerState(customer, customer::abandon);
         
         // Cancel Order if customer ordered
-        Order order = stateManager.findOrderOf(customer);
+        Order order = stateManager.findOrderOf(customer.getId());
         if (order != null){
             stateManager.updateOrderState(order, order::cancelOrder);
         }

@@ -43,7 +43,7 @@ public class ManagerView {
         // ORDERING depends on CUSTOMER is SEATED AND NO PLACED ORDER
         // Add all customers that are seated, then remove those that placed order already
         taskAvailable.get(Task.ORDERING).addAll(stateView.getCustomersByStatus(CustomerStatus.SEATED).stream()
-                    .filter(customer -> stateView.findOrderOf(customer) == null).map(Customer::getId).toList());
+                    .filter(customer -> stateView.findOrderOf(customer.getId()) == null).map(Customer::getId).toList());
 
         // COOKING depends on ORDER is PLACED OR COOKING
         taskAvailable.get(Task.COOKING).addAll(stateView.getOrdersByStatus(OrderStatus.PLACED)

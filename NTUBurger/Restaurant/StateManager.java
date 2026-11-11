@@ -43,9 +43,9 @@ public class StateManager implements StateView {
     // find customer's order
     // orderStatus created from the List.of(OrderStatus)
     @Override 
-    public Order findOrderOf(Customer customer) {
+    public Order findOrderOf(int customerId) {
         return orderState.values().stream().flatMap(List::stream)
-                    .filter(order -> order.getCustomerId() == customer.getId()).findFirst()
+                    .filter(order -> order.getCustomerId() == customerId).findFirst()
                     .orElse(null);
     }
     

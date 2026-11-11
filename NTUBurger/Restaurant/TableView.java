@@ -3,8 +3,6 @@ package NTUBurger.Restaurant;
 import java.util.Arrays;
 import java.util.List;
 
-import NTUBurger.Roles.Customer;
-
 // Tracking of table 
 // I dont know where to put the counting of empty and occupied tables
 
@@ -26,8 +24,8 @@ public interface TableView {
     }
 
     // Table the customer is sitting at, or null
-    default Table findTableOf(Customer customer) {
-        return Arrays.stream(getTables()).filter(table -> table.getCustomerId() == customer.getId())
+    default Table findTableOf(int customerId) {
+        return Arrays.stream(getTables()).filter(table -> table.getCustomerId() == customerId)
                 .findFirst().orElse(null);
     }
 }

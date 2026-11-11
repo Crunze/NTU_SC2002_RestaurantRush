@@ -112,13 +112,13 @@ public class GameController {
                 }
                 case ORDERING -> {
                     restaurant.processNewOrder(waiter, customer, BaseSetting.MENU);
-                    Order order = stateManager.findOrderOf(customer);
+                    Order order = stateManager.findOrderOf(customer.getId());
                     events.add("Waiter takes " + DisplayController.label(customer) + "'s order: "
                             + customer.getChosenFood().getName() + " " + DisplayController.toDollars(order.getPrice())
                             + " (" + customer.getChosenFood().getPrepUnits() + " unit(s)).");
                 }
                 case SERVING -> {
-                    Order order = stateManager.findOrderOf(customer);
+                    Order order = stateManager.findOrderOf(customer.getId());
                     restaurant.processServeOrder(waiter, customer, order, turn);
                     events.add("Waiter serves " + customer.getChosenFood().getName() + " to "
                             + DisplayController.label(customer) + ".");
@@ -129,7 +129,7 @@ public class GameController {
         if (!chefAction.isWait()) {
             Customer customer = stateManager.findCustomerById(chefAction.customerId());
             // Find the order AFTER the Waiter has acted, so an order taken this turn exists by now
-            Order order = stateManager.findOrderOf(customer);
+            Order order = stateManager.findOrderOf(customer.getId());
             restaurant.preparingFood(chef, order);
             events.add("Chef cooks " + customer.getChosenFood().getName() + " for " + DisplayController.label(customer)
                     + " (" + order.getStatus() + ").");
@@ -146,8 +146,8 @@ public class GameController {
             eligible.sort(Comparator.comparingInt(Customer::finishEatingTurn).thenComparingInt(Customer::getId));
             if (eligible.isEmpty()) { continue; }
             Customer customer = eligible.get(0);
-            Order order = stateManager.findOrderOf(customer);
-            Table table = restaurant.findTableOf(customer);
+            Order order = stateManager.findOrderOf(customer.getId());
+            Table table = restaurant.findTableOf(customer.getId());
             restaurant.processReadyToPay(cashier, customer, order, table);
             events.add("Cashier collects " + DisplayController.toDollars(order.getPrice()) + " from "
                     + DisplayController.label(customer) + " (satisfaction " + customer.getSatisfaction()

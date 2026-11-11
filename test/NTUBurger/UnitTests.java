@@ -110,7 +110,7 @@ public final class UnitTests {
         check(sm.isConsistent(), "consistent after seating");
 
         r.processNewOrder(w, c, List.of(BaseSetting.SALAD));
-        Order order = sm.findOrderOf(c);
+        Order order = sm.findOrderOf(c.getId());
         checkEquals(900, order.getPrice(), "order price is the menu price");
         r.preparingFood(chef, order);
         checkEquals(OrderStatus.READY, order.getStatus(), "salad is ready after one cook");
@@ -123,7 +123,7 @@ public final class UnitTests {
 
         r.processFinishEating(c, 3);
         checkEquals(CustomerStatus.READY_TO_PAY, c.getStatus(), "customer is ready to pay");
-        r.processReadyToPay(cashier, c, order, r.findTableOf(c));
+        r.processReadyToPay(cashier, c, order, r.findTableOf(c.getId()));
         checkEquals(CustomerStatus.PAID, c.getStatus(), "payment moves the customer itself to PAID");
         checkEquals(OrderStatus.PAID, order.getStatus(), "and the order to PAID");
         check(sm.isConsistent(), "consistent after payment");
