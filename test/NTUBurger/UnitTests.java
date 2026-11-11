@@ -109,7 +109,7 @@ public final class UnitTests {
         checkEquals(List.of(c), sm.getCustomersByStatus(CustomerStatus.SEATED), "seated customer is SEATED");
         check(sm.isConsistent(), "consistent after seating");
 
-        r.processNewOrder(w, c, List.of(BaseSetting.SALAD));
+        r.processNewOrder(w, c);
         Order order = sm.findOrderOf(c.getId());
         checkEquals(900, order.getPrice(), "order price is the menu price");
         r.preparingFood(chef, order);

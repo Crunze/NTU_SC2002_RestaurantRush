@@ -61,8 +61,9 @@ public class Restaurant implements TableView{
     }
 
     // Order Status: PLACED
-    public void processNewOrder(Waiter waiter, Customer customer, List<MenuItem> menu){
-        customer.chooseFood(menu.get(random.nextInt(menu.size()))); // Hardcoded Food, Need to set to Random
+    public void processNewOrder(Waiter waiter, Customer customer){
+        List<MenuItem> menu = BaseSetting.MENU;
+        customer.chooseFood(menu.get(random.nextInt(menu.size())));
         MenuItem food = customer.getChosenFood();
         stateManager.addOrder(waiter.takeOrder(customer.getId(), food));
     }

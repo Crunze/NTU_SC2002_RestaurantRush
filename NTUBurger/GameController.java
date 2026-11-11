@@ -101,6 +101,7 @@ public class GameController {
         StaffAction chefAction = managerMenu.getChoice(StaffRole.CHEF);
 
         // Retrieves the first Chef and Waiter
+        // Plan to remove the list for waiter and chef
         Waiter waiter = waiters.get(0);
         Chef chef = chefs.get(0);
 
@@ -113,7 +114,7 @@ public class GameController {
                     events.add("Waiter seats " + DisplayController.label(customer) + " at table " + table.getNumber() + ".");
                 }
                 case ORDERING -> {
-                    restaurant.processNewOrder(waiter, customer, BaseSetting.MENU);
+                    restaurant.processNewOrder(waiter, customer);
                     Order order = stateManager.findOrderOf(customer.getId());
                     events.add("Waiter takes " + DisplayController.label(customer) + "'s order: "
                             + customer.getChosenFood().getName() + " " + DisplayController.toDollars(order.getPrice())
