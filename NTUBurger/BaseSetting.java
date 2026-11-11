@@ -11,6 +11,7 @@ public final class BaseSetting {
 
     private BaseSetting() { }   //Prevent creating object from this class
 
+    public static final int RANDOMSEED = 18;
     public static final int MAX_TURNS = 18;
     public static final int NUM_TABLES = 2;
 

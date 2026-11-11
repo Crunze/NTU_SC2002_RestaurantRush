@@ -20,7 +20,7 @@ import NTUBurger.Roles.Waiter;
 public class GameApp {
     public static void main(String[] args) {
         // Chosen seed value to be 18.
-        Random random = new Random(18);
+        Random random = new Random(BaseSetting.RANDOMSEED);
 
         //Creating Waiter/Chef/Cashier
         List<Waiter> waiters = new ArrayList<>();
