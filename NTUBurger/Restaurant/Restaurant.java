@@ -8,6 +8,7 @@ import NTUBurger.Roles.CustomerStatus;
 import NTUBurger.Roles.Waiter;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 // Restaurant - Handles restuarant operations n processes
@@ -95,15 +96,21 @@ public class Restaurant implements TableView{
         table.free();
     }
 
-    public void processSatisfaction(){
-        for (CustomerStatus s : new CustomerStatus[]{ CustomerStatus.WAITING, CustomerStatus.SEATED}){
-            for (Customer c : stateManager.getCustomersByStatus(s)) {
-                c.loseSatisfaction();
-                if (c.isSatisfactionZero()) {
-                    processAbandoned(c);
+    // WAITING and SEATED but UNSERVED Customers lose satisfaction and left at 0
+    public List<CustomerSatisfaction> processSatisfaction(){
+        List<CustomerSatisfaction> customerSatisfaction = new ArrayList<>();
+        for (CustomerStatus customerStatus : List.of( CustomerStatus.WAITING, CustomerStatus.SEATED)){
+            for (Customer customer : stateManager.getCustomersByStatus(customerStatus)) {
+                int initSat = customer.getSatisfaction();
+                customer.loseSatisfaction();
+                if (customer.isSatisfactionZero()) {
+                    processAbandoned(customer);
                 }
+                customerSatisfaction.add(new CustomerSatisfaction(customer.getId(), initSat, 
+                customer.getSatisfaction()));
             }
         }
+        return customerSatisfaction;
     }
 
     // :: same as lambda but for no argument

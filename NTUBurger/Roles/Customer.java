@@ -14,14 +14,12 @@ public abstract class Customer {
     private MenuItem chosenFood; // Customer choose their own food
     private int finishEatingTurn; // Determine oldest first for payment
 
-    public Customer(int id){ //int arrivalTurn
+    public Customer(int id){
         this.id = id;
-        //this.arrivalTurn = arrivalTurn;
     }
     
     // Getters
     public int getId() { return id; }
-    //public int getArrivalTurn() { return arrivalTurn; }
     public int getServedTurn(){ return servedTurn; }
     public int getSatisfaction() { return satisfaction; }
     public CustomerStatus getStatus() { return status; }

@@ -11,6 +11,7 @@ import NTUBurger.Manager.ManagerMenu;
 import NTUBurger.Manager.ManagerView;
 import NTUBurger.Manager.StaffAction;
 import NTUBurger.Manager.StaffRole;
+import NTUBurger.Restaurant.CustomerSatisfaction;
 import NTUBurger.Restaurant.Order;
 import NTUBurger.Restaurant.Restaurant;
 import NTUBurger.Restaurant.StateManager;
@@ -161,18 +162,12 @@ public class GameController {
 
     // Step 5: customers still waiting or seated lose satisfaction; at 0 they leave
     private void step5(){
-        Map<Customer, Integer> before = new LinkedHashMap<>();
-        for (CustomerStatus status : List.of(CustomerStatus.WAITING, CustomerStatus.SEATED)) {
-            for (Customer customer : stateManager.getCustomersByStatus(status)) {
-                before.put(customer, customer.getSatisfaction());
-            }
-        }
-        restaurant.processSatisfaction();
-        for (Map.Entry<Customer, Integer> entry : before.entrySet()) {
-            Customer customer = entry.getKey();
-            events.add(DisplayController.label(customer) + " loses " + (entry.getValue() - customer.getSatisfaction())
-                    + " satisfaction (" + entry.getValue() + " -> " + customer.getSatisfaction() + ").");
-            if (customer.getStatus() == CustomerStatus.ABANDONED) {
+        for (CustomerSatisfaction customerSatisfaction : restaurant.processSatisfaction()) {
+            int customerId = customerSatisfaction.customerId();
+            Customer customer = stateManager.findCustomerById(customerId);
+            events.add(DisplayController.label(customer) + " loses " + (customerSatisfaction.initSat() - customerSatisfaction.afterSat())
+                    + " satisfaction (" + customerSatisfaction.initSat() + " -> " + customerSatisfaction.afterSat() + ").");
+            if (customer.isSatisfactionZero()) {
                 events.add("!! " + DisplayController.label(customer) + " runs out of patience and leaves unhappy.");
             }
         }
