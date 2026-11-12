@@ -1,6 +1,8 @@
 package NTUBurger.Roles;
 
 import NTUBurger.Restaurant.MenuItem;
+import java.util.List;
+import java.util.Random;
 
 // Customer has its behaviours and actions
 
@@ -29,7 +31,12 @@ public abstract class Customer {
 
     // Customer Actions
     public void seat() { status = CustomerStatus.SEATED; }
-    public void chooseFood(MenuItem food){ chosenFood = food; }
+    public void chooseFood(List<MenuItem> menu, Random random){
+        chosenFood = pickFood(menu, random);
+    }
+    protected MenuItem pickFood(List<MenuItem> menu, Random random){
+        return menu.get(random.nextInt(menu.size()));
+    }
     public void eat(int servedTurn) { 
         status = CustomerStatus.SERVED; 
         this.servedTurn = servedTurn;
