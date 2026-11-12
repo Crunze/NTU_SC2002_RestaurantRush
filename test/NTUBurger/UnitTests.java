@@ -109,6 +109,8 @@ public final class UnitTests {
         checkEquals(List.of(c), sm.getCustomersByStatus(CustomerStatus.SEATED), "seated customer is SEATED");
         check(sm.isConsistent(), "consistent after seating");
 
+        // Seed 1 makes processNewOrder pick Salad from the 3-item menu ($9.00, 1 prep unit).
+        // If the menu size changes, the pick can change: update these expectations to match.
         r.processNewOrder(w, c);
         Order order = sm.findOrderOf(c.getId());
         checkEquals(900, order.getPrice(), "order price is the menu price");
