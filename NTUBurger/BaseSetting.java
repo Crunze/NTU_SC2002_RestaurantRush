@@ -27,6 +27,10 @@ public final class BaseSetting {
     // List.of creates an unmodifiable list
     public static final List<Integer> CUSTOMER_ARRIVAL_TURN = List.of(1, 4, 7, 10, 13, 16);
 
+    // Stage 2: which arrivals (customer ids, in arrival order) are VIP or Critic. Everyone else is Regular
+    public static final List<Integer> VIP_CUSTOMER_IDS = List.of(2);
+    public static final List<Integer> CRITIC_CUSTOMER_IDS = List.of(3);
+
     // Objectives
     public static final int MIN_PAID_CUSTOMERS = 4;
     public static final int MIN_REVENUE_CENTS = 4500;
