@@ -88,6 +88,13 @@ public class DisplayController {
         System.out.println(RULE);
     }
 
+    // Happy Hour status, shown at the start of each turn while it is active
+    public static void showHappyHour(boolean active, int turnsLeft){
+        if (active) {
+            System.out.println(" ** HAPPY HOUR ACTIVE: 20% off new orders, " + turnsLeft + " turn(s) left (including this one) **");
+        }
+    }
+
     // What happened during the turn, then the running totals
     public static void showEndOfTurn(Result result, List<String> events) {
         System.out.println();

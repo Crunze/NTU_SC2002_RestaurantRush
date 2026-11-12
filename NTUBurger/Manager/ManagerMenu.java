@@ -84,4 +84,10 @@ public class ManagerMenu {
                 customerId.isEmpty() || customerId.getAsInt() == 0
                         ? StaffAction.WAIT : new StaffAction(Task.COOKING, customerId.getAsInt()));
     }
+    // Happy Hour: asked at the start of a turn, only when it has not been used yet
+    public boolean askHappyHour(){
+        System.out.println("Activate Happy Hour? (once per game, lasts this turn and the next)");
+        OptionalInt choice = readInt("1 = Yes, 0 = No: ", 0, 1);
+        return choice.isPresent() && choice.getAsInt() == 1;
+    }
 }

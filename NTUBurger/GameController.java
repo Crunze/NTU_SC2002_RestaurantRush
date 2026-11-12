@@ -70,8 +70,23 @@ public class GameController {
         // Retrieve the most updated list
         managerView.refreshList();
         DisplayController.showStartOfTurn(managerView, stateManager, restaurant, result);
+        startHappyHour();
     }
 
+    // Start of turn: the manager may switch on Happy Hour, then waiting customers recover while it is active
+    private void startHappyHour(){
+        if (restaurant.canActivateHappyHour() && managerMenu.askHappyHour()){
+            restaurant.activateHappyHour();
+            events.add("Happy Hour is ON: 20% off new orders this turn and the next.");
+        }
+        for (CustomerSatisfaction customerSatisfaction : restaurant.processHappyHourRecovery()) {
+            Customer customer = stateManager.findCustomerById(customerSatisfaction.customerId());
+            events.add(DisplayController.label(customer) + " recovers " + (customerSatisfaction.afterSat() - customerSatisfaction.initSat())
+                    + " satisfaction in Happy Hour (" + customerSatisfaction.initSat() + " -> " + customerSatisfaction.afterSat() + ").");
+        }
+        DisplayController.showHappyHour(restaurant.isHappyHourActive(), restaurant.getHappyHourTurnsLeft());
+    }
+    
     // Step 2: the manager picks one task for the Waiter, then one for the Chef
     private void step2(){
         // Reset ManagerChoice
@@ -163,6 +178,7 @@ public class GameController {
     // Step 6: end-of-turn summary
     private void step6(){
         DisplayController.showEndOfTurn(result, events);
+        restaurant.endHappyHourTurn();
     }
 
     private void runTurn(){
