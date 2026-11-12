@@ -20,6 +20,7 @@ public class Restaurant implements TableView{
     private final StateManager stateManager;
     private final Table[] tables;
     private final Random random;
+    private final HappyHour happyHour = new HappyHour();
 
     public Restaurant(StateManager stateManager, Random random){
         
@@ -153,4 +154,26 @@ public class Restaurant implements TableView{
             if (t.getCustomerId() == customer.getId()) { t.free(); }
         }
     }
+    // Happy Hour: Restaurant owns the policy, others ask through these methods
+    public boolean canActivateHappyHour(){ return happyHour.canActivate(); }
+    public void activateHappyHour(){ happyHour.activate(); }
+    public boolean isHappyHourActive(){ return happyHour.isActive(); }
+    public int getHappyHourTurnsLeft(){ return happyHour.getTurnsLeft(); }
+    public void endHappyHourTurn(){ happyHour.endTurn(); }
+
+    // Happy Hour: customers still waiting for a table (WAITING) or food (SEATED) recover satisfaction, max 100
+    // Customers who left (ABANDONED) or are already served are not affected
+    public List<CustomerSatisfaction> processHappyHourRecovery(){
+        List<CustomerSatisfaction> recovered = new ArrayList<>();
+        if (!happyHour.isActive()) { return recovered; }
+
+        for (CustomerStatus customerStatus : List.of(CustomerStatus.WAITING, CustomerStatus.SEATED)){
+            for (Customer customer : stateManager.getCustomersByStatus(customerStatus)) {
+                int initSat = customer.getSatisfaction();
+                customer.recoverSatisfaction(happyHour.getSatisfactionRecovery());
+                recovered.add(new CustomerSatisfaction(customer.getId(), initSat, customer.getSatisfaction()));
+            }
+        }
+        return recovered;
+        }
 }
