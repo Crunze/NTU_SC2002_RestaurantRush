@@ -58,6 +58,11 @@ public abstract class Customer {
         satisfaction = Math.max(0, satisfaction - satisfactionLossPerTurn());
     }
 
+    // Happy Hour: gain satisfaction, never above 100
+    public void recoverSatisfaction(int amount){
+        satisfaction = Math.min(100, satisfaction+amount);
+    }
+
     // Abstract methods for different customer
     public abstract int satisfactionLossPerTurn();
     // Takes the list price in cents and returns the final price in cents.

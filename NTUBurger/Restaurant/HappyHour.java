@@ -6,6 +6,7 @@ public class HappyHour {
 
     private static final int DURATION_TURNS = 2;
     private static final int DISCOUNT_PERCENT = 20;
+    private static final int SATISFACTION_RECOVERY = 15;
 
     private boolean used = false;   // Can only be activated once per game
     private int turnsLeft = 0;      // Active while above 0
@@ -22,6 +23,8 @@ public class HappyHour {
     public boolean isActive(){ return turnsLeft > 0; }
 
     public int getTurnsLeft(){ return turnsLeft; }
+    
+    public int getSatisfactionRecovery(){ return SATISFACTION_RECOVERY; }
 
     // Called at the end of every turn: counts down while active
     public void endTurn(){
