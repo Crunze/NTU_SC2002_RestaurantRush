@@ -10,10 +10,9 @@ public class Cashier extends Staff {
         super(id);
     }
 
-    // Prices the order for this customer and marks it paid
+    // Stage 3 change: The price was already locked when the order was taken
     // The customer's own status change (PAID) is done by Restaurant.processReadyToPay, inside the StateManager action
     public void processPayment(Order order, Customer customer){
-        order.setPrice(customer.applyDiscount(order.getPrice()));
         order.paid();
     }
 

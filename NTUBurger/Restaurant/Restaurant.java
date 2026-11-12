@@ -68,7 +68,10 @@ public class Restaurant implements TableView{
         List<MenuItem> menu = BaseSetting.MENU;
         customer.chooseFood(menu, random);        
         MenuItem food = customer.getChosenFood();
-        stateManager.addOrder(waiter.takeOrder(customer.getId(), food));
+        Order order = waiter.takeOrder(customer.getId(), food);
+        // Price is locked when the order is taken: customer discount first (eg VIP), then Happy Hour
+        order.setPrice(happyHour.applyTo(customer.applyDiscount(food.getPrice())));
+        stateManager.addOrder(order);
     }
 
     // Nested wrapper from both boilerplate to sync both customer n order state
