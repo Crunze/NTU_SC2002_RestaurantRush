@@ -14,7 +14,7 @@ The game is built in three stages, each its own commit and tag so that every sta
 | 2 | VIP and Critic customers | `base-stage-2` |
 | 3 | Host, Combo Meals and Happy Hour | `base-stage-3` |
 
-This README describes **Stage 1**.
+This README describes **Stage 2**.
 
 ## Requirements
 
@@ -31,10 +31,13 @@ This README describes **Stage 1**.
 ## The base setting (`BaseSetting.java`)
 
 - 18 turns, 2 tables, one Waiter, one Chef, one Cashier.
-- Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. Stage 1 customers are all Regular and lose
-  8 satisfaction per turn while waiting or seated without being served.
-- Menu: Salad $9.00 (1 unit), Burger $15.00 (1 unit), Pasta $18.00 (2 units). Each customer picks a dish at random from
-  a fixed seed (18), so a run is reproducible.
+- Customers arrive on turns 1, 4, 7, 10, 13 and 16 with satisfaction 100. Customer 2 (turn 4) is a VIP and customer 3
+  (turn 7) is a Critic; the rest are Regular. While waiting or seated without being served, a Regular loses 8
+  satisfaction per turn, a VIP 5 and a Critic 12.
+- Menu: Salad $9.00 (1 unit), Burger $15.00 (1 unit), Pasta $18.00 (2 units). Regular and VIP customers pick a dish at
+  random from a fixed seed (18), so a run is reproducible. A Critic always orders the dish with the most preparation
+  units (Pasta).
+- A VIP pays 90% of the price, rounded to the nearest cent. Regular and Critic customers pay full price.
 - **Win** after turn 18: at least 4 customers paid, revenue of at least $45.00, and an average satisfaction of paid
   customers of at least 60. The game always plays all 18 turns.
 
@@ -71,6 +74,32 @@ test/NTUBurger/           dependency-free tests (TestRunner)
 
 `test.bat` runs rule-level tests plus whole-game tests: scripted input, input that ends early, a strategy bot that
 wins the base game, and 300 random games in which the status lists, tables and satisfaction are audited at every prompt.
+
+## Stage 1 → Stage 2 changes
+
+**Added**
+
+| Class | Responsibility |
+|-------|----------------|
+| `CustomerVIP` | Loses 5 satisfaction per turn and pays 90% of the price (`applyDiscount`, rounded to the nearest cent). |
+| `CustomerCritic` | Loses 12 satisfaction per turn, pays full price and always orders the dish with the most preparation units (overrides `pickFood`). |
+
+**Modified**
+
+| Class | Change | Reason |
+|-------|--------|--------|
+| `Customer` | `chooseFood(MenuItem)` became `chooseFood(menu, random)`, which calls a new overridable `pickFood` (default: random dish). | Customers choose their own food, so each type can have its own rule. The Critic overrides `pickFood` instead of the controller checking the type. `chosenFood` stays private: subclasses only return a choice. |
+| `Restaurant` | `processNewOrder` asks the customer to choose (`customer.chooseFood(menu, random)`) instead of picking the dish itself. | Follows from the change above. |
+| `CustomerFactory` | Creates a VIP or Critic when the customer id is listed in `BaseSetting`, otherwise a Regular. | The one place that decides customer types, so the rest of the game never checks them. |
+| `BaseSetting` | Adds `VIP_CUSTOMER_IDS = [2]` and `CRITIC_CUSTOMER_IDS = [3]`. | The base run must include at least one VIP and one Critic. They arrive early (turns 4 and 7) so they can be served and pay. |
+
+**Critic behaviour.** A critic wants to judge the kitchen's most demanding dish, so it orders the item with the most
+preparation units. Combined with the fastest satisfaction loss, this makes the Critic the hardest customer to serve and
+forces the manager to choose between prioritising the Critic and serving others. The rule uses prep units rather than a
+named dish, so it still works if the menu changes.
+
+**What still works.** All 345 Stage 1 tests pass unchanged (`test.bat`), including 300 random games with the status
+lists, tables and satisfaction audited at every prompt.
 
 ---
 
