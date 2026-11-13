@@ -115,7 +115,7 @@ public final class UnitTests {
 
         // Seed 1 makes processNewOrder pick Salad from the 3-item menu ($9.00, 1 prep unit).
         // If the menu size changes, the pick can change: update these expectations to match.
-        r.processNewOrder(w, c);
+        r.processNewOrder(w, c, BaseSetting.MENU, BaseSetting.COMBOS);
         Order order = sm.findOrderOf(c.getId());
         checkEquals(900, order.getPrice(), "order price is the menu price");
         r.preparingFood(chef, order);
@@ -169,7 +169,7 @@ public final class UnitTests {
         Customer before = new CustomerRegular(1);
         r.updateArrivalQueue(before);
         r.seatProcess(w, before);
-        r.processNewOrder(w, before);
+        r.processNewOrder(w, before, BaseSetting.MENU, BaseSetting.COMBOS);
         Order beforeOrder = sm.findOrderOf(before.getId());
         int beforePrice = beforeOrder.getPrice();
 
@@ -180,7 +180,7 @@ public final class UnitTests {
         Customer vip = new CustomerVIP(2);
         r.updateArrivalQueue(vip);
         r.seatProcess(w, vip);
-        r.processNewOrder(w, vip);
+        r.processNewOrder(w, vip, BaseSetting.MENU, BaseSetting.COMBOS);
         Order vipOrder = sm.findOrderOf(vip.getId());
         int menuPrice = vip.getChosenFood().getPrice();
         int expected = (int) Math.round(vip.applyDiscount(menuPrice) * 80 / 100.0);
