@@ -190,7 +190,7 @@ public final class UnitTests {
         r.endHappyHourTurn();
         r.endHappyHourTurn();
         check(!r.isHappyHourActive(), "Happy Hour has ended");
-        cashier.processPayment(vipOrder, vip);
+        cashier.processPayment(vipOrder);
         checkEquals(expected, vipOrder.getPrice(), "Cashier keeps the price locked at ordering");
 
         // Recovery: waiting customers gain 15, never above 100; nothing happens once Happy Hour is off

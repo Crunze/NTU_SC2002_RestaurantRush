@@ -125,7 +125,7 @@ public class Restaurant implements TableView{
         int tableNo = table.getNumber();
 
         stateManager.updateCustomerState(customer, () -> {
-            stateManager.updateOrderState(order, () -> cashier.processPayment(order, customer));
+            stateManager.updateOrderState(order, () -> cashier.processPayment(order));
             customer.pay();
         });
         table.free();
