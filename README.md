@@ -176,3 +176,10 @@ greedy bot always declines Happy Hour and never uses the Host, so its winning st
 bots switch Happy Hour on and use the Host at random turns with every invariant still audited. 18 new checks cover the
 Happy Hour rules, including the brief's VIP Burger example ($10.80) and that orders placed before Happy Hour keep their
 price: 363 tests pass in total.
+
+## AI History
+
+| Member | Link |
+| --- | --- |
+| Arissa | [ai-history on branch arissa](https://github.com/Crunze/NTU_SC2002_RestaurantRush/blob/arissa/ai-history/stage-3/chat-01.md) |
+| Teammate name | link to their ai-history folder |
