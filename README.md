@@ -182,4 +182,5 @@ price: 363 tests pass in total.
 | Member | Link |
 | --- | --- |
 | Arissa | [ai-history on branch arissa](https://github.com/Crunze/NTU_SC2002_RestaurantRush/blob/arissa/ai-history/stage-3/chat-01.md) |
+| Cheng Xin | [ai-history on branch ai-history-chengxin](https://github.com/Crunze/NTU_SC2002_RestaurantRush/tree/ai-history-chengxin/ai-history) |
 | Teammate name | link to their ai-history folder |
