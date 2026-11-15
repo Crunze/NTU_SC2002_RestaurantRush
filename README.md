@@ -176,35 +176,3 @@ greedy bot always declines Happy Hour and never uses the Host, so its winning st
 bots switch Happy Hour on and use the Host at random turns with every invariant still audited. 18 new checks cover the
 Happy Hour rules, including the brief's VIP Burger example ($10.80) and that orders placed before Happy Hour keep their
 price: 363 tests pass in total.
-
----
-
-# Game Design (Implemented)
-
-## View Restrictions
-
-- `StateView` only allows retrieval of Customer and Order lists sorted by status from the `StateManager` class
-- `TableView` only allows retrieval of the table array and related table view operations from the `Restaurant` class
-
-## Restaurant Class Split into StateManager and Restaurant
-
-- `Restaurant` now **only** handles restaurant operations (processes only)
-- `Restaurant` owns the tables, so it includes an array to store them
-- `StateManager` stores both Customer and Order states and performs operations relating to status
-- `StateManager` uses a `Map<Status, List<...>>`: each status is a key, and its value is the list of Customers/Orders
-
-## Others
-
-- `BaseSetting` stores default configurations, subject to TA changes
-- No `Menu` class: a list of 3 `MenuItem` objects is used instead, since they are considered base configuration
-- `TableView` counts no. of occupied tables
-- `ManagerView` tracks tasks available
-- `Chef` has cookUnits attribute to determine no. of prepUnits to be deducted in `Order` class
-- Planning to put wait() as manager option rather than Chef/Waiter since they are more of Manager choice and not role specific actions.
-
----
-
-# Reflection
-
-- Underestimated the workload. Should have done the UML diagram first to track the work required.
-- Java has quite a number of convenient methods that bypassed the need of foreach
