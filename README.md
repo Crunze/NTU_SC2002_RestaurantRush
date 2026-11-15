@@ -17,6 +17,24 @@ The game is built in three stages, each its own commit and tag so that every sta
 This README describes the game up to **Stage 3**: the complete game with VIP and Critic customers, a Host, Combo Meals
 and Happy Hour.
 
+## Video
+
+The recorded presentation (about 15 minutes): [Watch on YouTube](https://www.youtube.com/watch?v=Za2Xe7xFbLo). Click a time to jump to that part.
+
+| Time | Part | Speaker |
+|------|------|---------|
+| [00:00](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=0s) | Game overview, the three stages and launching the game | Arissa |
+| [01:34](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=94s) | Gameplay demo: manager choices with constrained staff, a dish going READY → SERVED → payment, VIP and Critic behaviour | Run Ze |
+| [04:27](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=267s) | Stage 3 features: Host, Combo Meals and Happy Hour | Arissa |
+| [06:06](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=366s) | Stage 1 victory and defeat runs | Siddharth |
+| [07:14](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=434s) | Class diagram: Stage 1 | Siddharth |
+| [08:31](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=511s) | Class diagram: Stage 2 and the stage-1 → stage-2 comparison | Siddharth |
+| [09:13](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=553s) | Class diagram: Stage 3 and the stage-2 → stage-3 comparison | Siddharth |
+| [10:30](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=630s) | Use case and sequence diagram (VIP order during Happy Hour) | Cheng Xin |
+| [13:29](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=809s) | Individual reflection | Arissa |
+| [14:04](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=844s) | Individual reflection | Run Ze |
+| [14:33](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=873s) | Individual reflection | Cheng Xin |
+| [15:09](https://www.youtube.com/watch?v=Za2Xe7xFbLo&t=909s) | Individual reflection | Siddharth |
 ## Requirements
 
 - JDK 17 or newer. No other dependencies.
