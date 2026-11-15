@@ -10,7 +10,7 @@ The game is built in three stages, each its own commit and tag so that every sta
 
 | Stage | Adds | Tag |
 |-------|------|-----|
-| 1 | Base game: Regular customers, Waiter, Chef, Cashier | `base-stage-1` |
+| 1 | Base game: Regular customers, Waiter, Chef, Cashier | `[stage-1](https://github.com/Crunze/NTU_SC2002_RestaurantRush/releases/tag/stage-1)` |
 | 2 | VIP and Critic customers | `base-stage-2` |
 | 3 | Host, Combo Meals and Happy Hour | `base-stage-3` |
 
